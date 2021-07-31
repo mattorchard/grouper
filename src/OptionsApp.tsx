@@ -2,7 +2,10 @@ import "./globals.css";
 
 const PopupApp = () => {
   return (
-    <div>Hello Options World</div>
+    <main>
+      <h1>Options</h1>
+      <p>Options coming soon...</p>
+    </main>
   );
 };
 
