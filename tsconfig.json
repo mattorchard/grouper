@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["chrome", "node"],
+    "jsx": "preserve",
+    "jsxFactory": "preact.h",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "downlevelIteration": true
+  },
+  "include": "src"
+}

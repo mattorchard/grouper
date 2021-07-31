@@ -1,0 +1,7 @@
+.idea/
+.cache/
+.dist/
+node_modules/
+dist.pem
+# Project exclude paths
+/dist/
