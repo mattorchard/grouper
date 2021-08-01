@@ -2,11 +2,12 @@ const Bundler = require("parcel-bundler");
 const Path = require("path");
 const fs = require("fs");
 
-const resolvePath = relativePath => Path.join(__dirname, relativePath);
+const resolvePath = (relativePath) => Path.join(__dirname, relativePath);
 
 const entryFiles = [
   "./src/popup.html",
-  "./src/options.html"
+  "./src/options.html",
+  "./src/background.ts",
 ].map(resolvePath);
 
 const options = { hmr: false };

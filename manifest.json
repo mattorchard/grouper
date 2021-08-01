@@ -1,12 +1,25 @@
 {
   "name": "Grouper",
   "short_name": "Grouper",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Automate tab group creation",
   "icons": {},
   "permissions": ["tabs", "storage", "tabGroups"],
   "action": {
     "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "group-tabs": {
+      "suggested_key": "Ctrl+Q",
+      "description": "Group tabs"
+    },
+    "ungroup-tabs": {
+      "suggested_key": "Ctrl+Shift+Q",
+      "description": "Ungroups tabs"
+    }
   },
   "options_page": "options.html",
   "manifest_version": 3
