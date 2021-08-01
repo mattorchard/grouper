@@ -8,18 +8,20 @@
   --purple: #9334E6;
   --cyan: #007B83;
   --background-color: white;
-  --transparent-color: #A0A0A080;
-  --neutral-color: #c0c0c0;
-  --neutral-light-color: #e0e0e0;
-  --text-color: #000011d0;
+  --transparent-dark-color: #A0A0A010;
+  --transparent-light-color: #d0d0d060;
+  --neutral-color: #BDC1C6;
+  --neutral-light-color: #f6f6f6;
+  --text-color: #000008F0;
   --focus-color: #669DF6;
-  --special-color: #1A89EE;
-  --special-dark-color: #6f93c2;
+  --special-color: #1A73E8;
+  --special-dark-color: #8DB9F4;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: #292A2D;
-    --transparent-color: #202020E0;
+    --transparent-dark-color: #202020E0;
+    --transparent-light-color: #80808080;
     --neutral-color: #d0d0d0;
     --neutral-light-color: #f0f0f0;
     --text-color: #eeeeffd0;
@@ -68,7 +70,7 @@ body {
   background-color: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--transparent-color);
+  background-color: var(--transparent-dark-color);
   border-radius: 1rem;
 }
 * {
@@ -97,7 +99,7 @@ h2 {
   padding: .375rem 1rem;
   border: 1px solid var(--text-color);
   border-radius: .25rem;
-  background-color: var(--transparent-color);
+  background-color: var(--transparent-dark-color);
   color: var(--special-color);
   font-weight: bold;
   transition: background-color .2s ease-in-out;
@@ -118,9 +120,8 @@ input[type=text] {
   padding: .375rem .25rem;
   width: 100%;
   font-size: inherit;
-  /*border: 1px solid;*/
   box-shadow: 0 0 0 1px currentColor;
-  background-color: var(--transparent-color);
+  background-color: var(--transparent-dark-color);
   color: var(--text-color);
   border-radius: .125rem;
   margin-top: .125rem;
@@ -209,7 +210,6 @@ input[type=text] {
 .options__fieldset {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
   margin-bottom: 1rem;
 }
 
@@ -218,9 +218,14 @@ input[type=text] {
   align-items: center;
   cursor: pointer;
   border-radius: 2px;
+  padding: .25rem;
+}
+.switch:hover {
+  background-color: var(--transparent-light-color);
 }
 .switch:focus-within {
   box-shadow: 0 0 0 .125rem var(--special-color);
+  background-color: var(--transparent-light-color);
 }
 .switch__input {
   appearance: none;
@@ -246,7 +251,7 @@ input[type=text] {
   background-color: var(--neutral-light-color);
   border-radius: 1rem;
   transition: all .2s ease-in-out;
-  box-shadow: 0 0 .25rem var(--transparent-color);
+  box-shadow: 0 0 .25rem rgba(20,20,20,.4);
 }
 .switch--is-checked .switch__thumb {
   left: 100%;
