@@ -3,7 +3,7 @@ const lastAfter = (text: string, separator: string) => {
   return text.substring(index + 1);
 };
 
-const strip = (text: string) => text.trimStart().trimEnd();
+export const strip = (text: string) => text.trimStart().trimEnd();
 
 const getTitleTrailer = (title: string): string => {
   const hasBars = title.includes("|");

@@ -1,10 +1,12 @@
-import { groupByCallback, groupByProperty } from "./utilities";
+import { groupByProperty } from "./utilities";
 import { asUrl } from "./domHelpers";
 import { decomposeTitle } from "./textHelpers";
+import { loadOptions, loadRules } from "./repositoryHelpers";
+import { RuleEngine } from "./RuleEngine";
 
 type Tab = chrome.tabs.Tab;
 
-interface EnrichedTab extends Tab {
+export interface EnrichedTab extends Tab {
   id: number;
   urlObject: URL | null;
   titleTrailer: string;
@@ -29,7 +31,7 @@ export const unGroupAllTabs = async () => {
 };
 
 const createTabGroup = async (
-  groupProperties: chrome.tabGroups.UpdateProperties,
+  { title, color, collapsed }: chrome.tabGroups.UpdateProperties,
   tabs: Tab[]
 ) => {
   const windowId = tabs[0].windowId;
@@ -38,35 +40,50 @@ const createTabGroup = async (
     tabIds,
     createProperties: { windowId },
   });
-  const collapsed = !tabs.some((tab) => tab.active);
-  await chrome.tabGroups.update(groupId, { collapsed, ...groupProperties });
+  const hasActiveTab = tabs.some((tab) => tab.active);
+  await chrome.tabGroups.update(groupId, {
+    collapsed: collapsed && !hasActiveTab,
+    title,
+    color,
+  });
   return groupId;
 };
 
-export const naiveGroup = async () => {
+export const executeGrouping = async () => {
+  // Todo: Add feature to try and preserve existing groups
   await unGroupAllTabs();
+  const options = await loadOptions();
 
   const allTabs = (await chrome.tabs.query({})).map(enrichTab);
-  const windowGroups = groupByProperty(allTabs, "windowId");
+
+  const tabCollections = options.crossWindows
+    ? [allTabs]
+    : groupByProperty(allTabs, "windowId");
 
   const groupCreationPromises: Promise<number>[] = [];
 
-  windowGroups.forEach((tabsInWindow) => {
-    const tabsByHost = groupByCallback(
-      tabsInWindow,
-      (tab) => tab.urlObject?.hostname
-    );
-    tabsByHost.forEach((tabsToGroup) => {
+  const engine = new RuleEngine(await loadRules(), options);
+  tabCollections.forEach((tabsInCollection) => {
+    const groupSpecs = engine.createGroupSpecs(tabsInCollection);
+
+    groupSpecs.forEach((groupSpec) => {
       groupCreationPromises.push(
         createTabGroup(
-          {
-            title: tabsToGroup[0].titleTrailer,
-          },
-          tabsToGroup
+          { ...groupSpec, collapsed: options.collapse },
+          groupSpec.tabs
         )
       );
     });
   });
 
   await Promise.all(groupCreationPromises);
+};
+
+export const executeAutoRun = async (): Promise<boolean> => {
+  const { autoRun } = await loadOptions();
+  if (!autoRun) return false;
+  const tabs = await chrome.tabs.query({});
+  if (!tabs.some((tab) => !isWithinTabGroup(tab))) return false;
+  await executeGrouping();
+  return true;
 };
