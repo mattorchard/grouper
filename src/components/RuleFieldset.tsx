@@ -23,7 +23,7 @@ const RuleFieldset: FC<RuleFieldsetProps> = ({ rule, onChange, onDelete }) => (
         Title
         <input
           type="text"
-          placeholder="YouTube"
+          placeholder="ex. Spotify"
           value={rule.title}
           onInput={(e) => onChange({ ...rule, title: e.currentTarget.value })}
         />
@@ -32,7 +32,7 @@ const RuleFieldset: FC<RuleFieldsetProps> = ({ rule, onChange, onDelete }) => (
         Matches
         <input
           type="text"
-          placeholder="youtube.com"
+          placeholder="ex. spotify.com"
           value={rule.matches}
           onInput={(e) => onChange({ ...rule, matches: e.currentTarget.value })}
         />

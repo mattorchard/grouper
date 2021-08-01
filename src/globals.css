@@ -60,7 +60,7 @@ body {
   color: var(--text-color);
   font-size: 16px;
   padding: 1rem;
-  min-width: 220px;
+  min-width: 248px;
 }
 :focus {
   outline-color: var(--focus-color);

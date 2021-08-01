@@ -20,6 +20,9 @@ const RulesForm = () => {
             onDelete={() => deleteRule(rule.id)}
           />
         ))}
+        {rules?.length === 0 && (
+          <p>Add rules to create groups with a certain title and color.</p>
+        )}
       </div>
     </form>
   );
