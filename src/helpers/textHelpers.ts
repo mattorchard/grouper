@@ -19,3 +19,9 @@ const getTitleTrailer = (title: string): string => {
 };
 
 export const decomposeTitle = (title: string) => strip(getTitleTrailer(title));
+
+export const capitalizeFirst = (text: string) => {
+  const first = text.substring(0, 1);
+  const rest = text.substring(1);
+  return first.toUpperCase() + rest;
+};

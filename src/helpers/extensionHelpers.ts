@@ -1,13 +1,14 @@
 import { groupByCallback, groupByProperty } from "./utilities";
 import { asUrl } from "./domHelpers";
 import { decomposeTitle } from "./textHelpers";
+
 type Tab = chrome.tabs.Tab;
 
-type EnrichedTab = Tab & {
+interface EnrichedTab extends Tab {
   id: number;
   urlObject: URL | null;
   titleTrailer: string;
-};
+}
 
 const enrichTab = (tab: Tab): EnrichedTab => ({
   ...tab,
@@ -22,7 +23,9 @@ const getTabId = (tab: Tab) => tab.id!;
 export const unGroupAllTabs = async () => {
   const allTabs = await chrome.tabs.query({});
   const groupedTabIds = allTabs.filter(isWithinTabGroup).map(getTabId);
-  if (groupedTabIds.length > 0) await chrome.tabs.ungroup(groupedTabIds);
+  if (groupedTabIds.length > 0) {
+    await chrome.tabs.ungroup(groupedTabIds);
+  }
 };
 
 const createTabGroup = async (

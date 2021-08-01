@@ -1,7 +1,7 @@
 {
   "name": "Grouper",
   "short_name": "Grouper",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Automate tab group creation",
   "icons": {},
   "permissions": ["tabs", "storage", "tabGroups"],
