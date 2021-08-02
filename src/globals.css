@@ -7,16 +7,16 @@
   --pink: #D01884;
   --purple: #9334E6;
   --cyan: #007B83;
-  --grey-light: #5F6368;
-  --blue-light: #1A73E8;
-  --red-light: #D93025;
-  --yellow-light: #E37400;
-  --green-light: #1E8E3E;
-  --pink-light: #D01884;
-  --purple-light: #9334E6;
-  --cyan-light: #007B83;
+  --grey-light: #BDC1C6;
+  --blue-light: #8AB4F8;
+  --red-light: #F28B82;
+  --yellow-light: #FDD663;
+  --green-light: #81C995;
+  --pink-light: #FF8BCB;
+  --purple-light: #D7AEFB;
+  --cyan-light: #78D9EC;
   --background-color: white;
-  --background-light-color: white;
+  --background-light-color: #f0f0f0;
   --transparent-dark-color: #A0A0A010;
   --transparent-light-color: #d0d0d060;
   --neutral-color: #BDC1C6;
@@ -38,14 +38,6 @@
     --focus-color: #669DF6;
     --special-dark-color: #6f93c2;
     --special-color: #8AB4EA;
-    --grey-light: #BDC1C6;
-    --blue-light: #8AB4F8;
-    --red-light: #F28B82;
-    --yellow-light: #FDD663;
-    --green-light: #81C995;
-    --pink-light: #FF8BCB;
-    --purple-light: #D7AEFB;
-    --cyan-light: #78D9EC;
   }
 }
 .color-grey {
@@ -120,6 +112,13 @@ button {
 }
 h2 {
   font-size: 2rem;
+}
+a {
+  color: inherit;
+  transition: color .2s ease-in-out;
+}
+a:hover, a:focus {
+  color: var(--special-color)
 }
 .button {
   padding: .375rem 1rem;
@@ -236,7 +235,9 @@ input[type=text] {
 .options__fieldset {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1rem;
+}
+.options__footer {
+  text-align: right;
 }
 .options__form__row {
   display: flex;
@@ -285,7 +286,7 @@ input[type=text] {
   background-color: var(--neutral-light-color);
   border-radius: 1rem;
   transition: all .2s ease-in-out;
-  box-shadow: 0 0 .25rem rgba(20,20,20,.4);
+  box-shadow: 0 0 .125rem rgba(20,20,20,.4);
 }
 .switch--is-checked .switch__thumb {
   left: 100%;
@@ -337,13 +338,24 @@ h1 {
 }
 .info-popover__target:focus + .info-popover__content,
 .info-popover__target:hover + .info-popover__content,
-.info-popover__content:hover {
+.info-popover__content:hover,
+.info-popover__content:focus-within {
   pointer-events: all;
-  clip-path: polygon(0 -1rem, 100% -1rem, 100% 100%, 0 100%);
+  clip-path: polygon(
+      calc(0% - 1rem) calc(0% - 1rem),
+      calc(100% + 1rem) calc(0% - 1rem),
+      calc(100% + 1rem) calc(100% + 1rem),
+      calc(0% - 1rem) calc(100% + 1rem)
+  );
 }
 
 .info-popover__content {
-  clip-path: polygon(0 -1rem, 100% -1rem, 100% -1rem, 0 -1rem);
+  clip-path: polygon(
+      calc(0% - 1rem) calc(0% - 1rem),
+      calc(100% + 1rem) calc(0% - 1rem),
+      calc(100% + 1rem) calc(0% - 1rem),
+      calc(0% - 1rem) calc(0% - 1rem)
+  );
   transition: clip-path .2s ease-in-out;
   pointer-events: none;
   position: absolute;
@@ -354,7 +366,7 @@ h1 {
   width: var(--popover-width);
   padding: .5rem;
   background-color: var(--background-light-color);
-  box-shadow: 0 .5rem .5rem var(--transparent-dark-color);
+  box-shadow: 0 .25rem .25rem rgba(20,20,20,.3);
   border-radius: .125rem;
 }
 .info-popover__content::before {
@@ -385,6 +397,7 @@ h1 {
   -webkit-user-drag: none;
 }
 .rule-orderer__item--dragging {
+  box-shadow: 0 0 .25rem rgba(20,20,20,.4);
   background-color: var(--transparent-light-color);
   border-radius: .25rem;
   width: calc(var(--drag-width) * 1px);
@@ -394,7 +407,7 @@ h1 {
   pointer-events: none;
 }
 .rule-orderer__item__inner {
-  padding: .25rem .5rem;
+  padding: .375rem .5rem;
   color: #202020e0;
   background-color: var(--color-light);
   border-radius: .25rem;

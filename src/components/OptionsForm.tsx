@@ -3,7 +3,9 @@ import { OptionsRepository } from "../hooks/useOptionsRepository";
 import InfoPopover from "./InfoPopover";
 import { FC } from "preact/compat";
 
-const OptionsForm: FC<{ repo: OptionsRepository }> = ({ repo }) => {
+const OptionsForm: FC<{
+  repo: OptionsRepository;
+}> = ({ repo }) => {
   const { options, setOption } = repo;
 
   return (
@@ -58,7 +60,12 @@ const OptionsForm: FC<{ repo: OptionsRepository }> = ({ repo }) => {
             }}
             label="Manual order"
           />
-          <InfoPopover>Place groups in a pre-determined order.</InfoPopover>
+          <InfoPopover>
+            Place groups in a pre-determined order.{" "}
+            <a href="/options.html" target="_blank">
+              Configure order
+            </a>
+          </InfoPopover>
         </div>
         <div className="options__form__row">
           <Switch

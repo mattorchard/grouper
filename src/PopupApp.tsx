@@ -15,8 +15,17 @@ const PopupApp = () => {
         <Button onClick={executeGrouping}>Group</Button>
         <Button onClick={unGroupAllTabs}>Un-Group</Button>
       </main>
-      <OptionsForm repo={optionsRepo} />
-      <RulesForm repo={rulesRepo} />
+      <section>
+        <OptionsForm repo={optionsRepo} />
+        <div className="options__footer">
+          <a href="/options.html" target="_blank">
+            Full options
+          </a>
+        </div>
+      </section>
+      <section>
+        <RulesForm repo={rulesRepo} />
+      </section>
     </div>
   );
 };
