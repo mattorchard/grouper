@@ -1,4 +1,4 @@
-import { groupByCallback, groupByProperty } from "./utilities";
+import { groupByProperty } from "./utilities";
 import { asUrl } from "./domHelpers";
 import { decomposeTitle } from "./textHelpers";
 import { loadOptions, loadRules } from "./repositoryHelpers";
@@ -30,11 +30,14 @@ export const unGroupAllTabs = async () => {
   }
 };
 
+interface CreatedGroupSpec extends GroupSpec {
+  groupId: number;
+}
 const createTabGroup = async (
-  { title, color, collapsed }: chrome.tabGroups.UpdateProperties,
-  tabs: Tab[]
-) => {
-  const windowId = tabs[0].windowId;
+  groupSpec: GroupSpec,
+  collapsed: boolean
+): Promise<CreatedGroupSpec> => {
+  const { title, color, tabs, windowId } = groupSpec;
   const tabIds = tabs.map(getTabId);
   const groupId = await chrome.tabs.group({
     tabIds,
@@ -46,12 +49,8 @@ const createTabGroup = async (
     title,
     color,
   });
-  return groupId;
+  return { ...groupSpec, groupId };
 };
-
-interface CreatedGroupSpec extends GroupSpec {
-  groupId: number;
-}
 
 const setGroupOrder = async (groups: CreatedGroupSpec[]) => {
   let index = 0;
@@ -61,14 +60,28 @@ const setGroupOrder = async (groups: CreatedGroupSpec[]) => {
   }
 };
 
+const groupComparator = (a: GroupSpec, b: GroupSpec) =>
+  a.title.localeCompare(b.title);
+
+const alphabetizeTabs = async (createdGroups: CreatedGroupSpec[]) => {
+  const groupsByWindow = groupByProperty(createdGroups, "windowId");
+
+  await Promise.all(
+    groupsByWindow.map(async (groupsInWindow) => {
+      groupsInWindow.sort(groupComparator);
+      await setGroupOrder(groupsInWindow);
+    })
+  );
+};
+
 export const executeGrouping = async () => {
   // Todo: Add feature to try and preserve existing groups
   await unGroupAllTabs();
+
   const options = await loadOptions();
   const engine = new RuleEngine(await loadRules(), options);
 
   const allTabs = (await chrome.tabs.query({})).map(enrichTab);
-
   const groupBoundaries = options.crossWindows
     ? [allTabs]
     : groupByProperty(allTabs, "windowId");
@@ -77,28 +90,14 @@ export const executeGrouping = async () => {
     groupBoundaries.map(async (tabsInBoundary) => {
       const groupSpecs = engine.createGroupSpecs(tabsInBoundary);
 
-      const createdGroupSpecs = await Promise.all(
-        groupSpecs.map(async (groupSpec) => ({
-          ...groupSpec,
-          groupId: await createTabGroup(
-            { ...groupSpec, collapsed: options.collapse },
-            groupSpec.tabs
-          ),
-        }))
+      const createdGroups = await Promise.all(
+        groupSpecs.map((groupSpec) =>
+          createTabGroup(groupSpec, options.collapse)
+        )
       );
 
       if (options.alphabetize) {
-        const groupsByWindow = groupByCallback(
-          createdGroupSpecs,
-          (group) => group.tabs[0].windowId
-        );
-
-        await Promise.all(
-          groupsByWindow.map(async (groupsInWindow) => {
-            groupsInWindow.sort((a, b) => a.title.localeCompare(b.title));
-            await setGroupOrder(groupsInWindow);
-          })
-        );
+        await alphabetizeTabs(createdGroups);
       }
     })
   );

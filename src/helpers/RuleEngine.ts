@@ -11,6 +11,7 @@ export interface GroupSpec {
   title: string;
   color?: GroupColor;
   tabs: Tab[];
+  windowId: number;
 }
 
 type RuleMatcher = (tab: EnrichedTab) => Rule | null;
@@ -27,6 +28,7 @@ export class RuleEngine {
   createGroupSpecs(tabs: EnrichedTab[]): GroupSpec[] {
     const explicitGroups = new Map<Rule["title"], GroupSpec>();
     const autoGroups = new Map<string | undefined, GroupSpec>();
+
     tabs.forEach((tab) => {
       const rule = this.findMatchingRule(tab);
       if (rule) {
@@ -38,6 +40,7 @@ export class RuleEngine {
             title: rule.title,
             color: rule.color,
             tabs: [tab],
+            windowId: tab.windowId,
           });
         }
       } else if (this.autoGroup) {
@@ -48,6 +51,7 @@ export class RuleEngine {
           autoGroups.set(groupKey, {
             title: groupKey ? tab.titleTrailer : "Other",
             tabs: [tab],
+            windowId: tab.windowId,
           });
         }
       }
