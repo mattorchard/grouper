@@ -23,6 +23,7 @@ export interface Options {
   collapse: boolean;
   crossWindows: boolean;
   alphabetize: boolean;
+  manualOrder: boolean;
 }
 
 export const defaultOptions: Options = {
@@ -31,4 +32,5 @@ export const defaultOptions: Options = {
   collapse: true,
   crossWindows: false,
   alphabetize: false,
+  manualOrder: false,
 };

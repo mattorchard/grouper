@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { defaultOptions, Options } from "../types";
 import { loadOptions, saveOptions } from "../helpers/repositoryHelpers";
 
-interface OptionsRepository {
+export interface OptionsRepository {
   options: Options;
   setOption: (optionKey: keyof Options, value: boolean) => void;
 }

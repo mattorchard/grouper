@@ -21,7 +21,7 @@ export const saveOptions = async (options: Options): Promise<void> => {
   await setSyncedStorage("options", options);
 };
 
-export const loadOptions = async (): Promise<Options> =>
-  (await getSyncedStorage<Options>("options")) ||
-  console.log("???") ||
-  defaultOptions;
+export const loadOptions = async (): Promise<Options> => ({
+  ...defaultOptions,
+  ...(await getSyncedStorage<Options>("options")),
+});

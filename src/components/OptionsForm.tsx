@@ -1,9 +1,10 @@
 import Switch from "./Switch";
-import useOptionsRepository from "../hooks/useOptionsRepository";
+import { OptionsRepository } from "../hooks/useOptionsRepository";
 import InfoPopover from "./InfoPopover";
+import { FC } from "preact/compat";
 
-const OptionsForm = () => {
-  const { options, setOption } = useOptionsRepository();
+const OptionsForm: FC<{ repo: OptionsRepository }> = ({ repo }) => {
+  const { options, setOption } = repo;
 
   return (
     <form className="options-form">
@@ -38,12 +39,26 @@ const OptionsForm = () => {
         <div className="options__form__row">
           <Switch
             isChecked={options.alphabetize}
-            onChange={(isChecked) => setOption("alphabetize", isChecked)}
+            onChange={(isChecked) => {
+              setOption("alphabetize", isChecked);
+              if (isChecked) setOption("manualOrder", false);
+            }}
             label="Alphabetize"
           />
           <InfoPopover>
             Place groups in alphabetical order by title.
           </InfoPopover>
+        </div>
+        <div className="options__form__row">
+          <Switch
+            isChecked={options.manualOrder}
+            onChange={(isChecked) => {
+              setOption("manualOrder", isChecked);
+              if (isChecked) setOption("alphabetize", false);
+            }}
+            label="Manual order"
+          />
+          <InfoPopover>Place groups in a pre-determined order.</InfoPopover>
         </div>
         <div className="options__form__row">
           <Switch
