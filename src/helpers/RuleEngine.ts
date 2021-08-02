@@ -35,7 +35,7 @@ export class RuleEngine {
           explicitGroups.get(groupKey)!.tabs.push(tab);
         } else {
           explicitGroups.set(groupKey, {
-            title: groupKey,
+            title: rule.title,
             color: rule.color,
             tabs: [tab],
           });

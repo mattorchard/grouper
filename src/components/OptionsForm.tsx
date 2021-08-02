@@ -37,6 +37,16 @@ const OptionsForm = () => {
         </div>
         <div className="options__form__row">
           <Switch
+            isChecked={options.alphabetize}
+            onChange={(isChecked) => setOption("alphabetize", isChecked)}
+            label="Alphabetize"
+          />
+          <InfoPopover>
+            Place groups in alphabetical order by title.
+          </InfoPopover>
+        </div>
+        <div className="options__form__row">
+          <Switch
             isChecked={options.crossWindows}
             onChange={(isChecked) => setOption("crossWindows", isChecked)}
             label="Cross Windows"

@@ -22,11 +22,13 @@ export interface Options {
   autoGroup: boolean;
   collapse: boolean;
   crossWindows: boolean;
+  alphabetize: boolean;
 }
 
-export const defaultOptions = {
+export const defaultOptions: Options = {
   autoRun: true,
   autoGroup: true,
   collapse: true,
   crossWindows: false,
+  alphabetize: false,
 };

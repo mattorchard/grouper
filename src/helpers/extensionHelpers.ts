@@ -1,8 +1,8 @@
-import { groupByProperty } from "./utilities";
+import { groupByCallback, groupByProperty } from "./utilities";
 import { asUrl } from "./domHelpers";
 import { decomposeTitle } from "./textHelpers";
 import { loadOptions, loadRules } from "./repositoryHelpers";
-import { RuleEngine } from "./RuleEngine";
+import { GroupSpec, RuleEngine } from "./RuleEngine";
 
 type Tab = chrome.tabs.Tab;
 
@@ -49,34 +49,59 @@ const createTabGroup = async (
   return groupId;
 };
 
+interface CreatedGroupSpec extends GroupSpec {
+  groupId: number;
+}
+
+const setGroupOrder = async (groups: CreatedGroupSpec[]) => {
+  let index = 0;
+  for (const group of groups) {
+    await chrome.tabGroups.move(group.groupId, { index });
+    index += group.tabs.length;
+  }
+};
+
 export const executeGrouping = async () => {
   // Todo: Add feature to try and preserve existing groups
   await unGroupAllTabs();
   const options = await loadOptions();
+  const engine = new RuleEngine(await loadRules(), options);
 
   const allTabs = (await chrome.tabs.query({})).map(enrichTab);
 
-  const tabCollections = options.crossWindows
+  const groupBoundaries = options.crossWindows
     ? [allTabs]
     : groupByProperty(allTabs, "windowId");
 
-  const groupCreationPromises: Promise<number>[] = [];
+  await Promise.all(
+    groupBoundaries.map(async (tabsInBoundary) => {
+      const groupSpecs = engine.createGroupSpecs(tabsInBoundary);
 
-  const engine = new RuleEngine(await loadRules(), options);
-  tabCollections.forEach((tabsInCollection) => {
-    const groupSpecs = engine.createGroupSpecs(tabsInCollection);
-
-    groupSpecs.forEach((groupSpec) => {
-      groupCreationPromises.push(
-        createTabGroup(
-          { ...groupSpec, collapsed: options.collapse },
-          groupSpec.tabs
-        )
+      const createdGroupSpecs = await Promise.all(
+        groupSpecs.map(async (groupSpec) => ({
+          ...groupSpec,
+          groupId: await createTabGroup(
+            { ...groupSpec, collapsed: options.collapse },
+            groupSpec.tabs
+          ),
+        }))
       );
-    });
-  });
 
-  await Promise.all(groupCreationPromises);
+      if (options.alphabetize) {
+        const groupsByWindow = groupByCallback(
+          createdGroupSpecs,
+          (group) => group.tabs[0].windowId
+        );
+
+        await Promise.all(
+          groupsByWindow.map(async (groupsInWindow) => {
+            groupsInWindow.sort((a, b) => a.title.localeCompare(b.title));
+            await setGroupOrder(groupsInWindow);
+          })
+        );
+      }
+    })
+  );
 };
 
 export const executeAutoRun = async (): Promise<boolean> => {
