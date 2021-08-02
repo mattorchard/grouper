@@ -30,7 +30,7 @@ export class RuleEngine {
     tabs.forEach((tab) => {
       const rule = this.findMatchingRule(tab);
       if (rule) {
-        const groupKey = strip(rule.title);
+        const groupKey = strip(rule.title).toLowerCase();
         if (explicitGroups.has(groupKey)) {
           explicitGroups.get(groupKey)!.tabs.push(tab);
         } else {
@@ -64,17 +64,24 @@ export class RuleEngine {
   }
 
   private static createRuleMatchers(rules: Rule[]): RuleMatcher[] {
-    return rules.map((rule) => {
-      const matchesClean = strip(rule.matches).toLowerCase();
-      return (tab: EnrichedTab) => {
-        if (
-          tab.urlObject?.hostname.includes(matchesClean) ||
-          tab.titleTrailer.includes(matchesClean)
-        ) {
-          return rule;
-        }
-        return null;
-      };
-    });
+    return rules
+      .map((rule): RuleMatcher | undefined => {
+        const searchTokens = rule.matches
+          .split(",")
+          .map((token) => strip(token).toLowerCase())
+          .filter(Boolean);
+
+        if (searchTokens.length === 0) return;
+
+        return (tab: EnrichedTab) => {
+          const includesToken = searchTokens.some(
+            (token) =>
+              tab.urlObject?.hostname.toLowerCase().includes(token) ||
+              tab.titleTrailer.toLowerCase().includes(token)
+          );
+          return includesToken ? rule : null;
+        };
+      })
+      .filter(Boolean) as RuleMatcher[];
   }
 }
