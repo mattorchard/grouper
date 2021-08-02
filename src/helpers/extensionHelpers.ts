@@ -3,7 +3,7 @@ import { asUrl } from "./domHelpers";
 import { decomposeTitle } from "./textHelpers";
 import { loadOptions, loadRules } from "./repositoryHelpers";
 import { GroupSpec, RuleEngine } from "./RuleEngine";
-import { Rule } from "../types";
+import { groupColors, Rule } from "../types";
 import BiKeyMap from "./BiKeyMap";
 
 type Tab = chrome.tabs.Tab;
@@ -97,6 +97,21 @@ const sortGroupOrder = async (
   );
 };
 
+const assignUnusedColors = (groupSpecs: GroupSpec[]) => {
+  const unusedColors = new Set(groupColors);
+  const groupsWithoutColor: GroupSpec[] = [];
+  groupSpecs.forEach((group) => {
+    if (group.color) unusedColors.delete(group.color);
+    else groupsWithoutColor.push(group);
+  });
+  const availableColors = [...unusedColors].reverse();
+  groupsWithoutColor
+    .slice(0, availableColors.length)
+    .forEach((group, index) => {
+      group.color = availableColors[index];
+    });
+};
+
 export const executeGrouping = async () => {
   // Todo: Add feature to try and preserve existing groups
   await unGroupAllTabs();
@@ -114,7 +129,7 @@ export const executeGrouping = async () => {
     groupBoundaries.map(async (tabsInBoundary) => {
       const groupSpecs = engine.createGroupSpecs(tabsInBoundary);
 
-      // Todo: Non-repeating, non-grey colours
+      groupByProperty(groupSpecs, "windowId").forEach(assignUnusedColors);
 
       const createdGroups = await Promise.all(
         groupSpecs.map((groupSpec) =>
