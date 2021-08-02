@@ -7,6 +7,14 @@
   --pink: #D01884;
   --purple: #9334E6;
   --cyan: #007B83;
+  --grey-light: #5F6368;
+  --blue-light: #1A73E8;
+  --red-light: #D93025;
+  --yellow-light: #E37400;
+  --green-light: #1E8E3E;
+  --pink-light: #D01884;
+  --purple-light: #9334E6;
+  --cyan-light: #007B83;
   --background-color: white;
   --background-light-color: white;
   --transparent-dark-color: #A0A0A010;
@@ -30,32 +38,47 @@
     --focus-color: #669DF6;
     --special-dark-color: #6f93c2;
     --special-color: #8AB4EA;
-
+    --grey-light: #BDC1C6;
+    --blue-light: #8AB4F8;
+    --red-light: #F28B82;
+    --yellow-light: #FDD663;
+    --green-light: #81C995;
+    --pink-light: #FF8BCB;
+    --purple-light: #D7AEFB;
+    --cyan-light: #78D9EC;
   }
 }
 .color-grey {
   --color: var(--grey);
+  --color-light: var(--grey-light);
 }
 .color-blue {
   --color: var(--blue);
+  --color-light: var(--blue-light);
 }
 .color-red {
   --color: var(--red);
+  --color-light: var(--red-light);
 }
 .color-yellow {
   --color: var(--yellow);
+  --color-light: var(--yellow-light);
 }
 .color-green {
   --color: var(--green);
+  --color-light: var(--green-light);
 }
 .color-pink {
   --color: var(--pink);
+  --color-light: var(--pink-light);
 }
 .color-purple {
   --color: var(--purple);
+  --color-light: var(--purple-light);
 }
 .color-cyan {
   --color: var(--cyan);
+  --color-light: var(--cyan-light);
 }
 body {
   background-color: var(--background-color);
@@ -282,7 +305,14 @@ input[type=text] {
 }
 .options-body {
   gap: 2rem;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.reorder-section {
+  grid-column: span 2;
+}
+.reorder-section__header {
+  margin-bottom: 1rem;
 }
 h1 {
   font-size: 5rem;
@@ -336,4 +366,54 @@ h1 {
   height: 0;
   border: .5rem solid transparent;
   border-bottom-color: var(--background-light-color);
+}
+.rule-orderer {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  max-width: 512px;
+}
+.rule-orderer--dragging {
+  cursor: grabbing;
+}
+.rule-orderer.rule-orderer--dragging * {
+  cursor: inherit;
+}
+.rule-orderer__item {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.rule-orderer__item--dragging {
+  background-color: var(--transparent-light-color);
+  border-radius: .25rem;
+  width: calc(var(--drag-width) * 1px);
+  height: calc(var(--drag-height) * 1px);
+}
+.rule-orderer__item * {
+  pointer-events: none;
+}
+.rule-orderer__item__inner {
+  padding: .25rem .5rem;
+  color: #202020e0;
+  background-color: var(--color-light);
+  border-radius: .25rem;
+}
+:root {
+  --client-x: 0;
+  --client-y: 0;
+  --movement-x: 0;
+  --movement-y: 0;
+  --offset-x: 0;
+  --offset-y: 0;
+  --drag-width: 0;
+  --drag-height: 0;
+}
+.rule-orderer__item--dragging > .rule-orderer__item__inner {
+  pointer-events: none;
+  position: absolute;
+  left: calc((var(--client-x) - var(--offset-x)) * 1px);
+  top: calc((var(--client-y) - var(--offset-y)) * 1px);
+  width: calc(var(--drag-width) * 1px);
+  height: calc(var(--drag-height) * 1px);
 }

@@ -1,9 +1,10 @@
 import RuleFieldset from "./RuleFieldset";
 import Button from "./Button";
-import useRulesRepository from "../hooks/useRulesRepository";
+import { RulesRepository } from "../hooks/useRulesRepository";
+import { FC } from "preact/compat";
 
-const RulesForm = () => {
-  const { rules, addRule, saveRule, deleteRule } = useRulesRepository();
+const RulesForm: FC<{ repo: RulesRepository }> = ({ repo }) => {
+  const { rules, addRule, saveRule, deleteRule } = repo;
 
   return (
     <form className="rules-form">

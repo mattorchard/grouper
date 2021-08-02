@@ -6,13 +6,14 @@ import { Rule } from "../types";
 let saveRulesTid: number | null = null;
 const saveRulesDebounced = (rules: Rule[]) => {
   if (saveRulesTid) clearTimeout(saveRulesTid);
-  saveRulesTid = setTimeout(() => saveRules(rules), 250);
+  saveRulesTid = setTimeout(() => saveRules(rules), 300);
 };
 
-interface RulesRepository {
+export interface RulesRepository {
   rules: Rule[] | null;
   addRule: () => void;
   saveRule: (rule: Rule) => void;
+  saveRules: (rules: Rule[]) => void;
   deleteRule: (ruleId: Rule["id"]) => void;
 }
 
@@ -43,7 +44,10 @@ const useRulesRepository = (): RulesRepository => {
         : null
     );
 
-  return { rules, addRule, deleteRule, saveRule };
+  const saveRules = (rulesToSave: Rule[]) =>
+    setRules((rules) => (rules ? rulesToSave : null));
+
+  return { rules, saveRules, addRule, deleteRule, saveRule };
 };
 
 const newRule = (): Rule => ({

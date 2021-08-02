@@ -23,3 +23,16 @@ export const groupByCallback = <ItemType, GroupKeyType>(
   });
   return [...map.values()];
 };
+
+export const filterSplit = <ItemType>(
+  array: Array<ItemType>,
+  predicate: (item: ItemType, index: number, array: Array<ItemType>) => any
+) => {
+  const result = { false: [] as ItemType[], true: [] as ItemType[] };
+  array.forEach((item, index, array) =>
+    predicate(item, index, array)
+      ? result.true.push(item)
+      : result.false.push(item)
+  );
+  return result;
+};
