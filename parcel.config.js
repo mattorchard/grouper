@@ -19,6 +19,17 @@ const copyManifest = () => {
   fs.writeFileSync(resolvePath("./dist/manifest.json"), manifestContent);
 };
 
+const copyIcons = () => {
+  const icons = ["icon16.png", "icon48.png", "icon128.png"];
+  icons.forEach((icon) => {
+    fs.copyFileSync(
+      resolvePath(`./src/icons/${icon}`),
+      resolvePath(`./dist/${icon}`)
+    );
+  });
+};
+
 bundler.on("buildEnd", copyManifest);
+bundler.on("buildEnd", copyIcons);
 
 bundler.bundle();
