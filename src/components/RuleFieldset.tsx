@@ -14,10 +14,10 @@ const RuleFieldset: FC<RuleFieldsetProps> = ({ rule, onChange, onDelete }) => (
       <button
         type="button"
         className="delete-button"
-        title="Delete rule"
+        title={`Delete rule with title ${rule.title}`}
         onClick={() => onDelete()}
       >
-        &times;
+        <span aria-hidden="true">&times;</span>
       </button>
       <label className="text-label">
         Title
