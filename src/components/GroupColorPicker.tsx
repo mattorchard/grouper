@@ -1,21 +1,21 @@
-import { useState } from "preact/hooks";
 import { FC } from "preact/compat";
 import { capitalizeFirst } from "../helpers/textHelpers";
 import { GroupColor, groupColors } from "../types";
-
-const generateId = () => Math.random().toString();
+import useStableId from "../hooks/useStableId";
 
 const GroupColorPicker: FC<{
   value: GroupColor;
   onChange: (color: GroupColor) => void;
 }> = ({ value: selectedColor, onChange }) => {
-  const [id] = useState(generateId);
+  const id = useStableId();
   return (
     <div
       className="group-color-picker"
       onChange={(e) =>
         onChange((e.target as HTMLInputElement).value as GroupColor)
       }
+      role="group"
+      aria-label="Group color picker"
     >
       {groupColors.map((color) => (
         <input
