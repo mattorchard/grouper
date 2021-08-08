@@ -1,21 +1,13 @@
-const lastAfter = (text: string, separator: string) => {
-  const index = text.lastIndexOf(separator);
-  return text.substring(index + 1);
-};
-
 export const strip = (text: string) => text.trimStart().trimEnd();
 
+const separators = ["|", "-", "•", ",", "|", "–"];
+
 const getTitleTrailer = (title: string): string => {
-  const hasBars = title.includes("|");
-  const hasDashes = title.includes("-");
-  if (hasBars && hasDashes) {
-    return title.lastIndexOf("|") > title.lastIndexOf("-")
-      ? lastAfter(title, "|")
-      : lastAfter(title, "-");
-  }
-  if (hasBars) return lastAfter(title, "|");
-  if (hasDashes) return lastAfter(title, "-");
-  return title;
+  let startIndex = 0;
+  separators.forEach(
+    (sep) => (startIndex = Math.max(title.lastIndexOf(sep) + 1, startIndex))
+  );
+  return strip(title.substring(startIndex));
 };
 
 export const decomposeTitle = (title: string) => strip(getTitleTrailer(title));
