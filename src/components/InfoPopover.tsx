@@ -1,8 +1,8 @@
-import { FC } from "preact/compat";
-import { useRef } from "preact/hooks";
+import { FC, useRef } from "preact/compat";
 
-const InfoPopover: FC = ({ children }) => {
+const InfoPopover: FC<{ contentId?: string }> = ({ contentId, children }) => {
   const buttonRef = useRef<HTMLButtonElement>(undefined!);
+
   return (
     <div className="info-popover" onClick={() => buttonRef.current!.focus()}>
       <button
@@ -13,7 +13,9 @@ const InfoPopover: FC = ({ children }) => {
       >
         ?
       </button>
-      <div className="info-popover__content">{children}</div>
+      <div className="info-popover__content" id={contentId}>
+        {children}
+      </div>
     </div>
   );
 };
