@@ -395,13 +395,18 @@ h1 {
   cursor: grab;
   user-select: none;
   -webkit-user-drag: none;
+  transition: transform .2s ease-in-out;
 }
 .rule-orderer__item--dragging {
-  box-shadow: 0 0 .25rem rgba(20,20,20,.4);
   background-color: var(--transparent-light-color);
   border-radius: .25rem;
   width: calc(var(--drag-width) * 1px);
   height: calc(var(--drag-height) * 1px);
+}
+.rule-orderer__item--keyboard-dragging {
+  font-weight: bold;
+  transform: translateY(-0.5rem);
+  box-shadow: 0 .5rem 1rem rgba(20,20,20,.6);
 }
 .rule-orderer__item * {
   pointer-events: none;
@@ -425,8 +430,22 @@ h1 {
 .rule-orderer__item--dragging > .rule-orderer__item__inner {
   pointer-events: none;
   position: absolute;
+  box-shadow: 0 .5rem 1rem rgba(20,20,20,.4);
   left: calc((var(--client-x) - var(--offset-x)) * 1px);
   top: calc((var(--client-y) - var(--offset-y)) * 1px);
   width: calc(var(--drag-width) * 1px);
   height: calc(var(--drag-height) * 1px);
+}
+
+.sr-only {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
 }

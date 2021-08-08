@@ -5,3 +5,15 @@ export const asUrl = (urlSpec: any) => {
     return null;
   }
 };
+
+export const isAncestor = (
+  potentialAncestor: HTMLElement,
+  element: HTMLElement
+) => {
+  let currentElement: HTMLElement | null = element;
+  while (currentElement) {
+    if (currentElement === potentialAncestor) return true;
+    currentElement = currentElement.parentElement;
+  }
+  return false;
+};
