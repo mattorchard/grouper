@@ -24,12 +24,14 @@ export interface Options {
   crossWindows: boolean;
   alphabetize: boolean;
   manualOrder: boolean;
+  preserveGroups: boolean;
 }
 
 export const defaultOptions: Options = {
   autoRun: true,
   autoGroup: true,
   collapse: true,
+  preserveGroups: false,
   crossWindows: false,
   alphabetize: false,
   manualOrder: false,

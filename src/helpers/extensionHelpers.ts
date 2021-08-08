@@ -113,17 +113,21 @@ const assignUnusedColors = (groupSpecs: GroupSpec[]) => {
 };
 
 export const executeGrouping = async () => {
-  // Todo: Add feature to try and preserve existing groups
-  await unGroupAllTabs();
-
   const options = await loadOptions();
   const rules = await loadRules();
-  const engine = new RuleEngine(rules, options);
 
-  const allTabs = (await chrome.tabs.query({})).map(enrichTab);
+  if (!options.preserveGroups) {
+    await unGroupAllTabs();
+  }
+
+  const tabsToGroup = (await chrome.tabs.query({}))
+    .map(enrichTab)
+    .filter((tab) => !isWithinTabGroup(tab));
   const groupBoundaries = options.crossWindows
-    ? [allTabs]
-    : groupByProperty(allTabs, "windowId");
+    ? [tabsToGroup]
+    : groupByProperty(tabsToGroup, "windowId");
+
+  const engine = new RuleEngine(rules, options);
 
   await Promise.all(
     groupBoundaries.map(async (tabsInBoundary) => {

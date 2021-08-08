@@ -18,7 +18,7 @@ const OptionsApp = () => {
           {optionsRepo.options.manualOrder &&
             rulesRepo.rules &&
             rulesRepo.rules.length > 1 && <ReorderSection repo={rulesRepo} />}
-          <OptionsForm repo={optionsRepo} />
+          <OptionsForm repo={optionsRepo} isAdvanced={true} />
           <RulesForm repo={rulesRepo} />
         </div>
       </main>

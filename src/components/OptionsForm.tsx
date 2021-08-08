@@ -1,11 +1,12 @@
 import Switch from "./Switch";
 import { OptionsRepository } from "../hooks/useOptionsRepository";
 import InfoPopover from "./InfoPopover";
-import { FC } from "preact/compat";
+import { FC, Fragment } from "preact/compat";
 
 const OptionsForm: FC<{
   repo: OptionsRepository;
-}> = ({ repo }) => {
+  isAdvanced?: boolean;
+}> = ({ repo, isAdvanced = false }) => {
   const { options, setOption } = repo;
 
   return (
@@ -40,32 +41,11 @@ const OptionsForm: FC<{
         </div>
         <div className="options__form__row">
           <Switch
-            isChecked={options.alphabetize}
-            onChange={(isChecked) => {
-              setOption("alphabetize", isChecked);
-              if (isChecked) setOption("manualOrder", false);
-            }}
-            label="Alphabetize"
+            isChecked={options.preserveGroups}
+            onChange={(isChecked) => setOption("preserveGroups", isChecked)}
+            label="Preserve Groups"
           />
-          <InfoPopover>
-            Place groups in alphabetical order by title.
-          </InfoPopover>
-        </div>
-        <div className="options__form__row">
-          <Switch
-            isChecked={options.manualOrder}
-            onChange={(isChecked) => {
-              setOption("manualOrder", isChecked);
-              if (isChecked) setOption("alphabetize", false);
-            }}
-            label="Manual order"
-          />
-          <InfoPopover>
-            Place groups in a pre-determined order.{" "}
-            <a href="/options.html" target="_blank">
-              Configure order
-            </a>
-          </InfoPopover>
+          <InfoPopover>Ignores existing groups</InfoPopover>
         </div>
         <div className="options__form__row">
           <Switch
@@ -75,6 +55,35 @@ const OptionsForm: FC<{
           />
           <InfoPopover>Merge groups across windows.</InfoPopover>
         </div>
+        {isAdvanced && (
+          <Fragment>
+            <div className="options__form__row">
+              <Switch
+                isChecked={options.alphabetize}
+                onChange={(isChecked) => {
+                  setOption("alphabetize", isChecked);
+                  if (isChecked) setOption("manualOrder", false);
+                }}
+                label="Alphabetize"
+              />
+              <InfoPopover>
+                Place groups in alphabetical order by title.
+              </InfoPopover>
+            </div>
+
+            <div className="options__form__row">
+              <Switch
+                isChecked={options.manualOrder}
+                onChange={(isChecked) => {
+                  setOption("manualOrder", isChecked);
+                  if (isChecked) setOption("alphabetize", false);
+                }}
+                label="Manual order"
+              />
+              <InfoPopover>Place groups in a user-specified order.</InfoPopover>
+            </div>
+          </Fragment>
+        )}
       </fieldset>
     </form>
   );
