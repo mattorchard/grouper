@@ -211,7 +211,7 @@ input[type=text] {
   transition: all .2s ease-in-out;
 }
 .delete-button:hover,
-.delete-button:focus{
+.delete-button:focus {
   background-color: var(--red);
   color: var(--text-color);
 }
@@ -286,7 +286,7 @@ input[type=text] {
   background-color: var(--neutral-light-color);
   border-radius: 1rem;
   transition: all .2s ease-in-out;
-  box-shadow: 0 0 .125rem rgba(20,20,20,.4);
+  box-shadow: 0 0 .125rem rgba(20, 20, 20, .4);
 }
 .switch--is-checked .switch__thumb {
   left: 100%;
@@ -366,7 +366,7 @@ h1 {
   width: var(--popover-width);
   padding: .5rem;
   background-color: var(--background-light-color);
-  box-shadow: 0 .25rem .25rem rgba(20,20,20,.3);
+  box-shadow: 0 .25rem .25rem rgba(20, 20, 20, .3);
   border-radius: .125rem;
 }
 .info-popover__content::before {
@@ -406,7 +406,7 @@ h1 {
 .rule-orderer__item--keyboard-dragging {
   font-weight: bold;
   transform: translateY(-0.5rem);
-  box-shadow: 0 .5rem 1rem rgba(20,20,20,.6);
+  box-shadow: 0 .5rem 1rem rgba(20, 20, 20, .6);
 }
 .rule-orderer__item * {
   pointer-events: none;
@@ -430,7 +430,7 @@ h1 {
 .rule-orderer__item--dragging > .rule-orderer__item__inner {
   pointer-events: none;
   position: absolute;
-  box-shadow: 0 .5rem 1rem rgba(20,20,20,.4);
+  box-shadow: 0 .5rem 1rem rgba(20, 20, 20, .4);
   left: calc((var(--client-x) - var(--offset-x)) * 1px);
   top: calc((var(--client-y) - var(--offset-y)) * 1px);
   width: calc(var(--drag-width) * 1px);
