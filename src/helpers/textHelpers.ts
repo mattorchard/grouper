@@ -1,16 +1,12 @@
-export const strip = (text: string) => text.trimStart().trimEnd();
+const separatorSet = new Set(["|", "-", "•", ",", "|", "–"]);
 
-const separators = ["|", "-", "•", ",", "|", "–"];
-
-const getTitleTrailer = (title: string): string => {
+export const decomposeTitle = (title: string): string => {
   let startIndex = 0;
-  separators.forEach(
-    (sep) => (startIndex = Math.max(title.lastIndexOf(sep) + 1, startIndex))
-  );
-  return strip(title.substring(startIndex));
+  for (const [index, char] of [...title].entries()) {
+    if (separatorSet.has(char)) startIndex = index;
+  }
+  return title.substring(startIndex + 1).trim();
 };
-
-export const decomposeTitle = (title: string) => strip(getTitleTrailer(title));
 
 export const capitalizeFirst = (text: string) => {
   const first = text.substring(0, 1);

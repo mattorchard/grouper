@@ -1,7 +1,6 @@
 import { GroupColor, Rule } from "../types";
 import { EnrichedTab } from "./extensionHelpers";
 import Tab = chrome.tabs.Tab;
-import { strip } from "./textHelpers";
 
 interface RuleEngineOptions {
   autoGroup: boolean;
@@ -32,7 +31,7 @@ export class RuleEngine {
     tabs.forEach((tab) => {
       const rule = this.findMatchingRule(tab);
       if (rule) {
-        const groupKey = strip(rule.title).toLowerCase();
+        const groupKey = rule.title.trim().toLowerCase();
         if (explicitGroups.has(groupKey)) {
           explicitGroups.get(groupKey)!.tabs.push(tab);
         } else {
@@ -72,7 +71,7 @@ export class RuleEngine {
       .map((rule): RuleMatcher | undefined => {
         const searchTokens = rule.matches
           .split(",")
-          .map((token) => strip(token).toLowerCase())
+          .map((token) => token.trim().toLowerCase())
           .filter(Boolean);
 
         if (searchTokens.length === 0) return;
@@ -81,7 +80,7 @@ export class RuleEngine {
           const includesToken = searchTokens.some(
             (token) =>
               tab.urlObject?.hostname.toLowerCase().includes(token) ||
-              tab.titleTrailer.toLowerCase().includes(token)
+              tab.titleTrailer.toLowerCase().includes(token),
           );
           return includesToken ? rule : null;
         };
