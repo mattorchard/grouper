@@ -1,43 +1,43 @@
 :root {
-  --grey: #5F6368;
-  --blue: #1A73E8;
-  --red: #D93025;
-  --yellow: #E37400;
-  --green: #1E8E3E;
-  --pink: #D01884;
-  --purple: #9334E6;
-  --cyan: #007B83;
-  --grey-light: #BDC1C6;
-  --blue-light: #8AB4F8;
-  --red-light: #F28B82;
-  --yellow-light: #FDD663;
-  --green-light: #81C995;
-  --pink-light: #FF8BCB;
-  --purple-light: #D7AEFB;
-  --cyan-light: #78D9EC;
+  --grey: #5f6368;
+  --blue: #1a73e8;
+  --red: #d93025;
+  --yellow: #e37400;
+  --green: #1e8e3e;
+  --pink: #d01884;
+  --purple: #9334e6;
+  --cyan: #007b83;
+  --grey-light: #bdc1c6;
+  --blue-light: #8ab4f8;
+  --red-light: #f28b82;
+  --yellow-light: #fdd663;
+  --green-light: #81c995;
+  --pink-light: #ff8bcb;
+  --purple-light: #d7aefb;
+  --cyan-light: #78d9ec;
   --background-color: white;
   --background-light-color: #f0f0f0;
-  --transparent-dark-color: #A0A0A010;
+  --transparent-dark-color: #a0a0a010;
   --transparent-light-color: #d0d0d060;
-  --neutral-color: #BDC1C6;
+  --neutral-color: #bdc1c6;
   --neutral-light-color: #f6f6f6;
-  --text-color: #000008F0;
-  --focus-color: #669DF6;
-  --special-color: #1A73E8;
-  --special-dark-color: #8DB9F4;
+  --text-color: #000008f0;
+  --focus-color: #669df6;
+  --special-color: #1a73e8;
+  --special-dark-color: #8db9f4;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --background-color: #292A2D;
+    --background-color: #292a2d;
     --background-light-color: #585a5f;
-    --transparent-dark-color: #202020E0;
+    --transparent-dark-color: #202020e0;
     --transparent-light-color: #80808080;
     --neutral-color: #d0d0d0;
     --neutral-light-color: #f0f0f0;
     --text-color: #eeeeffd0;
-    --focus-color: #669DF6;
+    --focus-color: #669df6;
     --special-dark-color: #6f93c2;
-    --special-color: #8AB4EA;
+    --special-color: #8ab4ea;
   }
 }
 .color-grey {
@@ -115,21 +115,23 @@ h2 {
 }
 a {
   color: inherit;
-  transition: color .2s ease-in-out;
+  transition: color 0.2s ease-in-out;
 }
-a:hover, a:focus {
-  color: var(--special-color)
+a:hover,
+a:focus {
+  color: var(--special-color);
 }
 .button {
-  padding: .375rem 1rem;
+  padding: 0.375rem 1rem;
   border: 1px solid var(--text-color);
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   background-color: var(--transparent-dark-color);
   color: var(--special-color);
   font-weight: bold;
-  transition: background-color .2s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
 }
-.button:hover, .button:focus {
+.button:hover,
+.button:focus {
   background-color: var(--background-color);
 }
 .popup-app {
@@ -141,25 +143,25 @@ a:hover, a:focus {
   display: flex;
   gap: 1rem;
 }
-input[type=text] {
-  padding: .375rem .25rem;
+input[type="text"] {
+  padding: 0.375rem 0.25rem;
   width: 100%;
   font-size: inherit;
   box-shadow: 0 0 0 1px currentColor;
   background-color: var(--transparent-dark-color);
   color: var(--text-color);
-  border-radius: .125rem;
-  margin-top: .125rem;
+  border-radius: 0.125rem;
+  margin-top: 0.125rem;
 }
 .text-label {
   display: flex;
   flex-direction: column;
   font-weight: bold;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 .group-color-picker {
   display: flex;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 .group-color-picker__input {
   display: inline-block;
@@ -179,10 +181,10 @@ input[type=text] {
   background-color: var(--color);
 }
 .group-color-picker__input::after {
-  inset: .125rem;
-  border: .125rem solid var(--background-color);
+  inset: 0.125rem;
+  border: 0.125rem solid var(--background-color);
   transform: scale(0);
-  transition: transform .1s ease-out;
+  transition: transform 0.1s ease-out;
 }
 .group-color-picker__input:checked::after {
   transform: scale(1);
@@ -197,8 +199,8 @@ input[type=text] {
 }
 .delete-button {
   position: absolute;
-  top: -.25rem;
-  right: -.25rem;
+  top: -0.25rem;
+  right: -0.25rem;
   width: 1.25rem;
   height: 1.25rem;
   color: var(--special-color);
@@ -208,7 +210,7 @@ input[type=text] {
   font-size: 1.25rem;
   line-height: 1.25rem;
   text-align: center;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 .delete-button:hover,
 .delete-button:focus {
@@ -253,13 +255,13 @@ input[type=text] {
   align-items: center;
   cursor: pointer;
   border-radius: 2px;
-  padding: .25rem;
+  padding: 0.25rem;
 }
 .switch:hover {
   background-color: var(--transparent-light-color);
 }
 .switch:focus-within {
-  box-shadow: 0 0 0 .125rem var(--special-color);
+  box-shadow: 0 0 0 0.125rem var(--special-color);
   background-color: var(--transparent-light-color);
 }
 .switch__input {
@@ -267,12 +269,12 @@ input[type=text] {
 }
 .switch__track {
   width: 2rem;
-  height: .75rem;
+  height: 0.75rem;
   background-color: var(--neutral-color);
   border-radius: 2rem;
   position: relative;
   pointer-events: none;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   filter: light(1.25);
 }
 .switch__thumb {
@@ -285,8 +287,8 @@ input[type=text] {
   width: 1rem;
   background-color: var(--neutral-light-color);
   border-radius: 1rem;
-  transition: all .2s ease-in-out;
-  box-shadow: 0 0 .125rem rgba(20, 20, 20, .4);
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 0.125rem rgba(20, 20, 20, 0.4);
 }
 .switch--is-checked .switch__thumb {
   left: 100%;
@@ -297,7 +299,7 @@ input[type=text] {
   background-color: var(--special-dark-color);
 }
 .switch__label__inner {
-  margin-left: .5rem;
+  margin-left: 0.5rem;
   user-select: none;
 }
 .options__wrapper {
@@ -308,6 +310,7 @@ input[type=text] {
   gap: 2rem;
   display: grid;
   grid-template-columns: auto auto;
+  width: 512px;
 }
 .reorder-section {
   grid-column: span 2;
@@ -330,8 +333,8 @@ h1 {
   cursor: help;
   background-color: var(--neutral-color);
   color: var(--background-color);
-  transition: background-color .2s ease-in-out;
-  font-size: .75rem;
+  transition: background-color 0.2s ease-in-out;
+  font-size: 0.75rem;
 }
 .info-popover__target:focus {
   background-color: var(--special-color);
@@ -342,46 +345,46 @@ h1 {
 .info-popover__content:focus-within {
   pointer-events: all;
   clip-path: polygon(
-      calc(0% - 1rem) calc(0% - 1rem),
-      calc(100% + 1rem) calc(0% - 1rem),
-      calc(100% + 1rem) calc(100% + 1rem),
-      calc(0% - 1rem) calc(100% + 1rem)
+    calc(0% - 1rem) calc(0% - 1rem),
+    calc(100% + 1rem) calc(0% - 1rem),
+    calc(100% + 1rem) calc(100% + 1rem),
+    calc(0% - 1rem) calc(100% + 1rem)
   );
 }
 
 .info-popover__content {
   clip-path: polygon(
-      calc(0% - 1rem) calc(0% - 1rem),
-      calc(100% + 1rem) calc(0% - 1rem),
-      calc(100% + 1rem) calc(0% - 1rem),
-      calc(0% - 1rem) calc(0% - 1rem)
+    calc(0% - 1rem) calc(0% - 1rem),
+    calc(100% + 1rem) calc(0% - 1rem),
+    calc(100% + 1rem) calc(0% - 1rem),
+    calc(0% - 1rem) calc(0% - 1rem)
   );
-  transition: clip-path .2s ease-in-out;
+  transition: clip-path 0.2s ease-in-out;
   pointer-events: none;
   position: absolute;
   top: 100%;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
   right: 0;
   z-index: 20;
   width: var(--popover-width);
-  padding: .5rem;
+  padding: 0.5rem;
   background-color: var(--background-light-color);
-  box-shadow: 0 .25rem .25rem rgba(20, 20, 20, .3);
-  border-radius: .125rem;
+  box-shadow: 0 0.25rem 0.25rem rgba(20, 20, 20, 0.3);
+  border-radius: 0.125rem;
 }
 .info-popover__content::before {
   content: "";
   position: absolute;
   bottom: 100%;
-  right: .125rem;
+  right: 0.125rem;
   width: 0;
   height: 0;
-  border: .5rem solid transparent;
+  border: 0.5rem solid transparent;
   border-bottom-color: var(--background-light-color);
 }
 .rule-orderer {
   display: flex;
-  gap: .5rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
   max-width: 512px;
 }
@@ -395,27 +398,27 @@ h1 {
   cursor: grab;
   user-select: none;
   -webkit-user-drag: none;
-  transition: transform .2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
 }
 .rule-orderer__item--dragging {
   background-color: var(--transparent-light-color);
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   width: calc(var(--drag-width) * 1px);
   height: calc(var(--drag-height) * 1px);
 }
 .rule-orderer__item--keyboard-dragging {
   font-weight: bold;
   transform: translateY(-0.5rem);
-  box-shadow: 0 .5rem 1rem rgba(20, 20, 20, .6);
+  box-shadow: 0 0.5rem 1rem rgba(20, 20, 20, 0.6);
 }
 .rule-orderer__item * {
   pointer-events: none;
 }
 .rule-orderer__item__inner {
-  padding: .375rem .5rem;
+  padding: 0.375rem 0.5rem;
   color: #202020e0;
   background-color: var(--color-light);
-  border-radius: .25rem;
+  border-radius: 0.25rem;
 }
 :root {
   --client-x: 0;
@@ -430,7 +433,7 @@ h1 {
 .rule-orderer__item--dragging > .rule-orderer__item__inner {
   pointer-events: none;
   position: absolute;
-  box-shadow: 0 .5rem 1rem rgba(20, 20, 20, .4);
+  box-shadow: 0 0.5rem 1rem rgba(20, 20, 20, 0.4);
   left: calc((var(--client-x) - var(--offset-x)) * 1px);
   top: calc((var(--client-y) - var(--offset-y)) * 1px);
   width: calc(var(--drag-width) * 1px);

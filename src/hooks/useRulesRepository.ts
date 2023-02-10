@@ -34,14 +34,14 @@ const useRulesRepository = (): RulesRepository => {
     setRules((rules) => (rules ? [newRule(), ...rules] : null));
   const deleteRule = (ruleToDeleteId: string) =>
     setRules((rules) =>
-      rules ? rules.filter((rule) => rule.id !== ruleToDeleteId) : null
+      rules ? rules.filter((rule) => rule.id !== ruleToDeleteId) : null,
     );
 
   const saveRule = (ruleToSave: Rule) =>
     setRules((rules) =>
       rules
         ? rules.map((rule) => (rule.id === ruleToSave.id ? ruleToSave : rule))
-        : null
+        : null,
     );
 
   const saveRules = (rulesToSave: Rule[]) =>
