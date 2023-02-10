@@ -5,35 +5,11 @@ import { FC, Fragment } from "preact/compat";
 import { Options } from "../types";
 import useStableId from "../hooks/useStableId";
 
-const OptionSwitch: FC<{
-  optionName: keyof Options;
-  label: string;
-  description: string;
-  options: Options;
-  setOption: OptionsRepository["setOption"];
-}> = ({ optionName, label, description, options, setOption }) => {
-  const descriptionId = useStableId();
-  return (
-    <div className="options__form__row">
-      <Switch
-        isChecked={options[optionName]}
-        onChange={(isChecked) => setOption(optionName, isChecked)}
-        label={label}
-        describedBy={descriptionId}
-      />
-      <InfoPopover contentId={descriptionId}>{description}</InfoPopover>
-    </div>
-  );
-};
-
 const OptionsForm: FC<{
   repo: OptionsRepository;
   isAdvanced?: boolean;
 }> = ({ repo, isAdvanced = false }) => {
   const { options, setOption } = repo;
-
-  const alphabetizeDescriptionId = useStableId();
-  const manualOrderDescriptionId = useStableId();
 
   return (
     <form className="options-form">
@@ -79,39 +55,56 @@ const OptionsForm: FC<{
 
         {isAdvanced && (
           <Fragment>
-            <div className="options__form__row">
-              <Switch
-                isChecked={options.alphabetize}
-                onChange={(isChecked) => {
-                  setOption("alphabetize", isChecked);
-                  if (isChecked) setOption("manualOrder", false);
-                }}
-                label="Alphabetize"
-                describedBy={alphabetizeDescriptionId}
-              />
-              <InfoPopover contentId={alphabetizeDescriptionId}>
-                Place groups in alphabetical order by title.
-              </InfoPopover>
-            </div>
+            <OptionSwitch
+              optionName="alphabetize"
+              label="Alphabetize"
+              description="Place groups in alphabetical order by title."
+              onChange={(isChecked) => {
+                if (isChecked) setOption("manualOrder", false);
+              }}
+              options={options}
+              setOption={setOption}
+            />
 
-            <div className="options__form__row">
-              <Switch
-                isChecked={options.manualOrder}
-                onChange={(isChecked) => {
-                  setOption("manualOrder", isChecked);
-                  if (isChecked) setOption("alphabetize", false);
-                }}
-                label="Manual order"
-                describedBy={manualOrderDescriptionId}
-              />
-              <InfoPopover contentId={manualOrderDescriptionId}>
-                Place groups in a user-specified order.
-              </InfoPopover>
-            </div>
+            <OptionSwitch
+              optionName="manualOrder"
+              label="Manual order"
+              description="Place groups in a user-specified order."
+              onChange={(isChecked) => {
+                if (isChecked) setOption("alphabetize", false);
+              }}
+              options={options}
+              setOption={setOption}
+            />
           </Fragment>
         )}
       </fieldset>
     </form>
+  );
+};
+
+const OptionSwitch: FC<{
+  optionName: keyof Options;
+  label: string;
+  description: string;
+  options: Options;
+  setOption: OptionsRepository["setOption"];
+  onChange?: (isChecked: boolean) => void;
+}> = ({ optionName, label, description, options, setOption, onChange }) => {
+  const descriptionId = useStableId();
+  return (
+    <div className="options__form__row">
+      <Switch
+        isChecked={options[optionName]}
+        onChange={(isChecked) => {
+          setOption(optionName, isChecked);
+          onChange?.(isChecked);
+        }}
+        label={label}
+        describedBy={descriptionId}
+      />
+      <InfoPopover contentId={descriptionId}>{description}</InfoPopover>
+    </div>
   );
 };
 
