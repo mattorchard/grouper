@@ -1,14 +1,18 @@
 {
   "name": "Grouper",
   "short_name": "Grouper",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Automate tab group creation",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "permissions": ["tabs", "storage", "tabGroups"],
+  "permissions": [
+    "tabs",
+    "storage",
+    "tabGroups"
+  ],
   "action": {
     "default_popup": "popup.html"
   },
@@ -17,12 +21,11 @@
   },
   "commands": {
     "group-tabs": {
-      "suggested_key": "Ctrl+Q",
+      "suggested_key": {
+        "default": "Ctrl+Q",
+        "mac": "MacCtrl+Q"
+      },
       "description": "Group tabs"
-    },
-    "ungroup-tabs": {
-      "suggested_key": "Ctrl+Shift+Q",
-      "description": "Ungroups tabs"
     }
   },
   "options_page": "options.html",
