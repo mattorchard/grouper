@@ -3,5 +3,6 @@
 .dist/
 node_modules/
 dist.pem
+dist.zip
 # Project exclude paths
 /dist/
