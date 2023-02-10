@@ -37,7 +37,7 @@ interface CreatedGroupSpec extends GroupSpec {
 }
 const createTabGroup = async (
   groupSpec: GroupSpec,
-  collapsed: boolean
+  collapsed: boolean,
 ): Promise<CreatedGroupSpec> => {
   const { title, color, tabs, windowId } = groupSpec;
   const tabIds = tabs.map(getTabId);
@@ -85,7 +85,7 @@ const createManualOrderComparator = (rules: Rule[]): GroupComparator => {
 
 const sortGroupOrder = async (
   createdGroups: CreatedGroupSpec[],
-  comparator: GroupComparator
+  comparator: GroupComparator,
 ) => {
   const groupsByWindow = groupByProperty(createdGroups, "windowId");
 
@@ -93,7 +93,7 @@ const sortGroupOrder = async (
     groupsByWindow.map(async (groupsInWindow) => {
       groupsInWindow.sort(comparator);
       await setGroupOrder(groupsInWindow);
-    })
+    }),
   );
 };
 
@@ -123,6 +123,9 @@ export const executeGrouping = async () => {
   const tabsToGroup = (await chrome.tabs.query({}))
     .map(enrichTab)
     .filter((tab) => !isWithinTabGroup(tab));
+
+  if (tabsToGroup.length === 0) return;
+
   const groupBoundaries = options.crossWindows
     ? [tabsToGroup]
     : groupByProperty(tabsToGroup, "windowId");
@@ -137,8 +140,8 @@ export const executeGrouping = async () => {
 
       const createdGroups = await Promise.all(
         groupSpecs.map((groupSpec) =>
-          createTabGroup(groupSpec, options.collapse)
-        )
+          createTabGroup(groupSpec, options.collapse),
+        ),
       );
 
       if (options.manualOrder) {
@@ -146,15 +149,14 @@ export const executeGrouping = async () => {
       } else if (options.alphabetize) {
         await sortGroupOrder(createdGroups, groupTitleComparator);
       }
-    })
+    }),
   );
 };
 
-export const executeAutoRun = async (): Promise<boolean> => {
+export const autoRunIfEnabled = async (): Promise<boolean> => {
   const { autoRun } = await loadOptions();
   if (!autoRun) return false;
-  const tabs = await chrome.tabs.query({});
-  if (!tabs.some((tab) => !isWithinTabGroup(tab))) return false;
+
   await executeGrouping();
   return true;
 };
