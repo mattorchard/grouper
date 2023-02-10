@@ -1,5 +1,5 @@
-import { executeAutoRun } from "./helpers/extensionHelpers";
+import { autoRunIfEnabled } from "./helpers/extensionHelpers";
 
-executeAutoRun().then((didRun) => {
+autoRunIfEnabled().then((didRun) => {
   if (didRun) console.log("Auto-run complete");
 });
