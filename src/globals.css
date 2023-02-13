@@ -224,6 +224,7 @@ input[type="text"] {
 .rules-form {
   display: flex;
   flex-direction: column;
+  max-width: 13.5rem;
 }
 .rules-form__header {
   display: flex;
@@ -309,8 +310,7 @@ input[type="text"] {
 .options-body {
   gap: 2rem;
   display: grid;
-  grid-template-columns: auto auto;
-  width: 512px;
+  grid-template-columns: 13.5rem 13.5rem;
 }
 .reorder-section {
   grid-column: span 2;
