@@ -2,7 +2,7 @@ import { MultiMap } from "./MultiMap";
 
 export const groupByProperty = <ItemType, PropertyType extends keyof ItemType>(
   items: ItemType[],
-  propertyName: PropertyType
+  propertyName: PropertyType,
 ): ItemType[][] => {
   const map = new MultiMap<ItemType[PropertyType], ItemType>();
   items.forEach((item) => {
@@ -14,7 +14,7 @@ export const groupByProperty = <ItemType, PropertyType extends keyof ItemType>(
 
 export const groupByCallback = <ItemType, GroupKeyType>(
   items: ItemType[],
-  callback: (item: ItemType) => GroupKeyType
+  callback: (item: ItemType) => GroupKeyType,
 ): ItemType[][] => {
   const map = new MultiMap<GroupKeyType, ItemType>();
   items.forEach((item) => {
@@ -26,13 +26,16 @@ export const groupByCallback = <ItemType, GroupKeyType>(
 
 export const filterSplit = <ItemType>(
   array: Array<ItemType>,
-  predicate: (item: ItemType, index: number, array: Array<ItemType>) => any
+  predicate: (item: ItemType, index: number, array: Array<ItemType>) => any,
 ) => {
   const result = { false: [] as ItemType[], true: [] as ItemType[] };
   array.forEach((item, index, array) =>
     predicate(item, index, array)
       ? result.true.push(item)
-      : result.false.push(item)
+      : result.false.push(item),
   );
   return result;
 };
+
+export const notNullish = <T>(value: T | null | undefined): value is T =>
+  value !== null && value !== undefined;

@@ -97,6 +97,7 @@ const sortGroupOrder = async (
   );
 };
 
+// Assigns unused colors to uncoloured groups until all colours used
 const assignUnusedColors = (groupSpecs: GroupSpec[]) => {
   const unusedColors = new Set(groupColors);
   const groupsWithoutColor: GroupSpec[] = [];

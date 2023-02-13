@@ -1,5 +1,7 @@
 import { GroupColor, Rule } from "../types";
 import { EnrichedTab } from "./extensionHelpers";
+import { cleanText } from "./textHelpers";
+import { notNullish } from "./utilities";
 import Tab = chrome.tabs.Tab;
 
 interface RuleEngineOptions {
@@ -8,30 +10,33 @@ interface RuleEngineOptions {
 
 export interface GroupSpec {
   title: string;
-  color?: GroupColor;
   tabs: Tab[];
   windowId: number;
+  color?: GroupColor;
 }
 
-type RuleMatcher = (tab: EnrichedTab) => Rule | null;
+type RuleCheck = {
+  rule: Rule;
+  test: (tab: EnrichedTab) => boolean;
+};
 
 export class RuleEngine {
-  private readonly ruleMatchers: RuleMatcher[];
+  private readonly ruleChecks: RuleCheck[];
   private readonly autoGroup: boolean;
 
   constructor(rules: Rule[], { autoGroup }: RuleEngineOptions) {
-    this.ruleMatchers = RuleEngine.createRuleMatchers(rules);
+    this.ruleChecks = RuleEngine.createRuleChecks(rules);
     this.autoGroup = autoGroup;
   }
 
-  createGroupSpecs(tabs: EnrichedTab[]): GroupSpec[] {
-    const explicitGroups = new Map<Rule["title"], GroupSpec>();
+  public createGroupSpecs(tabs: EnrichedTab[]): GroupSpec[] {
+    const explicitGroups = new Map<string, GroupSpec>();
     const autoGroups = new Map<string | undefined, GroupSpec>();
 
     tabs.forEach((tab) => {
       const rule = this.findMatchingRule(tab);
       if (rule) {
-        const groupKey = rule.title.trim().toLowerCase();
+        const groupKey = cleanText(rule.title);
         if (explicitGroups.has(groupKey)) {
           explicitGroups.get(groupKey)!.tabs.push(tab);
         } else {
@@ -48,7 +53,7 @@ export class RuleEngine {
           autoGroups.get(groupKey)!.tabs.push(tab);
         } else {
           autoGroups.set(groupKey, {
-            title: groupKey ? tab.titleTrailer : "Other",
+            title: tab.titleTrailer || "Other",
             tabs: [tab],
             windowId: tab.windowId,
           });
@@ -59,32 +64,33 @@ export class RuleEngine {
   }
 
   private findMatchingRule(tab: EnrichedTab) {
-    for (const ruleMatcher of this.ruleMatchers) {
-      const rule = ruleMatcher(tab);
-      if (rule) return rule;
+    for (const { rule, test } of this.ruleChecks) {
+      const isMatch = test(tab);
+      if (isMatch) return rule;
     }
     return null;
   }
 
-  private static createRuleMatchers(rules: Rule[]): RuleMatcher[] {
+  private static createRuleChecks(rules: Rule[]): RuleCheck[] {
     return rules
-      .map((rule): RuleMatcher | undefined => {
+      .map((rule): RuleCheck | undefined => {
         const searchTokens = rule.matches
           .split(",")
-          .map((token) => token.trim().toLowerCase())
+          .map((token) => cleanText(token))
           .filter(Boolean);
 
         if (searchTokens.length === 0) return;
 
-        return (tab: EnrichedTab) => {
-          const includesToken = searchTokens.some(
-            (token) =>
-              tab.urlObject?.hostname.toLowerCase().includes(token) ||
-              tab.titleTrailer.toLowerCase().includes(token),
-          );
-          return includesToken ? rule : null;
+        return {
+          rule,
+          test: (tab: EnrichedTab): boolean =>
+            searchTokens.some(
+              (token) =>
+                cleanText(tab.urlObject?.hostname)?.includes(token) ||
+                cleanText(tab.titleTrailer).includes(token),
+            ),
         };
       })
-      .filter(Boolean) as RuleMatcher[];
+      .filter(notNullish);
   }
 }
