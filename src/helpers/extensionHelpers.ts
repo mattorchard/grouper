@@ -100,9 +100,12 @@ const updateTabGroup = async (
   return { ...groupSpec, groupId: existingGroup.id };
 };
 
-const setGroupOrder = async (groups: ReadonlyArray<ConcreteGroupSpec>) => {
+const setGroupOrder = async (
+  groups: ReadonlyArray<ConcreteGroupSpec>,
+  offset: number,
+) => {
   for (const group of [...groups].reverse()) {
-    await chrome.tabGroups.move(group.groupId, { index: 0 });
+    await chrome.tabGroups.move(group.groupId, { index: offset });
   }
 };
 
@@ -130,13 +133,16 @@ const createManualOrderComparator = (rules: Rule[]): GroupComparator => {
 const sortGroupOrder = async (
   createdGroups: ConcreteGroupSpec[],
   comparator: GroupComparator,
+  sortOffsetMap: ReadonlyMap<number, number>,
 ) => {
   const groupsByWindow = groupByProperty(createdGroups, "windowId");
 
   await Promise.all(
     groupsByWindow.map(async (groupsInWindow) => {
       groupsInWindow.sort(comparator);
-      await setGroupOrder(groupsInWindow);
+      const [{ windowId }] = groupsInWindow;
+      const offset = sortOffsetMap.get(windowId) ?? 0;
+      await setGroupOrder(groupsInWindow, offset);
     }),
   );
 };
@@ -173,7 +179,8 @@ export const executeGroupingInner = async () => {
   const optionsPromise = loadOptions();
   const existingGroupsPromise = chrome.tabGroups.query({});
 
-  const tabsToGroup = (await chrome.tabs.query({})).map(enrichTab);
+  const allTabs = (await chrome.tabs.query({})).map(enrichTab);
+  const tabsToGroup = allTabs.filter((tab) => !tab.pinned);
   console.debug("Tabs to group", tabsToGroup);
   if (tabsToGroup.length === 0) return;
 
@@ -185,6 +192,7 @@ export const executeGroupingInner = async () => {
   const rules = await rulesPromise;
   const engine = new RuleEngine(rules, options);
   const existingGroups = await existingGroupsPromise;
+  const sortOffsetMap = countPinnedTabsPerWindow(allTabs);
 
   await Promise.all(
     groupBoundaries.map(async (tabsInBoundary) => {
@@ -211,9 +219,14 @@ export const executeGroupingInner = async () => {
         await sortGroupOrder(
           concreteGroups,
           createManualOrderComparator(rules),
+          sortOffsetMap,
         );
       } else if (options.alphabetize) {
-        await sortGroupOrder(concreteGroups, groupTitleComparator);
+        await sortGroupOrder(
+          concreteGroups,
+          groupTitleComparator,
+          sortOffsetMap,
+        );
       }
     }),
   );
@@ -225,4 +238,16 @@ export const autoRunIfEnabled = async (): Promise<boolean> => {
 
   await executeGrouping();
   return true;
+};
+
+const countPinnedTabsPerWindow = (
+  allTabs: EnrichedTab[],
+): ReadonlyMap<number, number> => {
+  const map = new Map();
+  for (const tab of allTabs) {
+    if (!tab.pinned) continue;
+    const lastCount = map.get(tab.windowId) ?? 0;
+    map.set(tab.windowId, lastCount + 1);
+  }
+  return map;
 };
