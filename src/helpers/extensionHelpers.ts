@@ -7,6 +7,8 @@ import { groupColors, Rule } from "../types";
 import BiKeyMap from "./BiKeyMap";
 
 type Tab = chrome.tabs.Tab;
+type TabGroup = chrome.tabGroups.TabGroup;
+type TabGroupUpdate = chrome.tabGroups.UpdateProperties;
 
 export interface EnrichedTab extends Tab {
   id: number;
@@ -21,44 +23,86 @@ const enrichTab = (tab: Tab): EnrichedTab => ({
   titleTrailer: tab.title ? decomposeTitle(tab.title) : "",
 });
 
-const isWithinTabGroup = (tab: Tab) => tab.groupId !== -1;
+const isWithinTabGroup = (tab: Tab) =>
+  tab.groupId !== chrome.tabGroups.TAB_GROUP_ID_NONE;
+
 const getTabId = (tab: Tab) => tab.id!;
 
-export const unGroupAllTabs = async () => {
+const getTabDebug = ({ id, title }: Tab) => ({ id, title });
+
+export const ungroupAllTabs = async () => {
   const allTabs = await chrome.tabs.query({});
-  const groupedTabIds = allTabs.filter(isWithinTabGroup).map(getTabId);
+  await ungroupTabs(allTabs);
+};
+
+const ungroupTabs = async (tabs: Tab[]) => {
+  const groupedTabIds = tabs.filter(isWithinTabGroup).map(getTabId);
   if (groupedTabIds.length > 0) {
     await chrome.tabs.ungroup(groupedTabIds);
   }
 };
 
-interface CreatedGroupSpec extends GroupSpec {
+interface ConcreteGroupSpec extends GroupSpec {
   groupId: number;
 }
+
 const createTabGroup = async (
   groupSpec: GroupSpec,
   collapsed: boolean,
-): Promise<CreatedGroupSpec> => {
+): Promise<ConcreteGroupSpec> => {
   const { title, color, tabs, windowId } = groupSpec;
-  const tabIds = tabs.map(getTabId);
+
   const groupId = await chrome.tabs.group({
-    tabIds,
+    tabIds: tabs.map(getTabId),
     createProperties: { windowId },
   });
-  const hasActiveTab = tabs.some((tab) => tab.active);
+
   await chrome.tabGroups.update(groupId, {
-    collapsed: collapsed && !hasActiveTab,
+    collapsed: collapsed && !tabs.some((tab) => tab.active),
     title,
     color,
   });
-  return { ...groupSpec, groupId };
+  return { ...groupSpec, groupId: groupId };
 };
 
-const setGroupOrder = async (groups: CreatedGroupSpec[]) => {
-  let index = 0;
-  for (const group of groups) {
-    await chrome.tabGroups.move(group.groupId, { index });
-    index += group.tabs.length;
+const shouldUpdateGroupDetails = (
+  existing: TabGroupUpdate,
+  change: TabGroupUpdate,
+) =>
+  change.collapsed !== existing.collapsed ||
+  change.title !== existing.title ||
+  (change.color && change.color !== existing.color);
+
+const updateTabGroup = async (
+  existingGroup: TabGroup,
+  groupSpec: GroupSpec,
+  collapsed: boolean,
+): Promise<ConcreteGroupSpec> => {
+  const { title, color, tabs } = groupSpec;
+
+  const tabsToRegroup = groupSpec.tabs.filter(
+    (tab) => tab.groupId !== existingGroup.id,
+  );
+  if (tabsToRegroup.length > 0) {
+    await chrome.tabs.group({
+      groupId: existingGroup.id,
+      tabIds: tabsToRegroup.map(getTabId),
+    });
+  }
+  const groupPatch = {
+    collapsed: collapsed && !tabs.some((tab) => tab.active),
+    title,
+    color,
+  };
+  if (shouldUpdateGroupDetails(existingGroup, groupPatch)) {
+    await chrome.tabGroups.update(existingGroup.id, groupPatch);
+  }
+  return { ...groupSpec, groupId: existingGroup.id };
+};
+
+const setGroupOrder = async (groups: ReadonlyArray<ConcreteGroupSpec>) => {
+  for (const group of [...groups].reverse()) {
+    await chrome.tabGroups.move(group.groupId, { index: 0 });
   }
 };
 
@@ -84,7 +128,7 @@ const createManualOrderComparator = (rules: Rule[]): GroupComparator => {
 };
 
 const sortGroupOrder = async (
-  createdGroups: CreatedGroupSpec[],
+  createdGroups: ConcreteGroupSpec[],
   comparator: GroupComparator,
 ) => {
   const groupsByWindow = groupByProperty(createdGroups, "windowId");
@@ -114,41 +158,62 @@ const assignUnusedColors = (groupSpecs: GroupSpec[]) => {
 };
 
 export const executeGrouping = async () => {
-  const options = await loadOptions();
-  const rules = await loadRules();
-
-  if (!options.preserveGroups) {
-    await unGroupAllTabs();
+  try {
+    console.time("executeGrouping");
+    await executeGroupingInner();
+    console.timeEnd("executeGrouping");
+  } catch (error) {
+    console.error(`Failed to group tabs`, error);
+    throw error;
   }
+};
 
-  const tabsToGroup = (await chrome.tabs.query({}))
-    .map(enrichTab)
-    .filter((tab) => !isWithinTabGroup(tab));
+export const executeGroupingInner = async () => {
+  const rulesPromise = loadRules();
+  const optionsPromise = loadOptions();
+  const existingGroupsPromise = chrome.tabGroups.query({});
 
+  const tabsToGroup = (await chrome.tabs.query({})).map(enrichTab);
+  console.debug("Tabs to group", tabsToGroup);
   if (tabsToGroup.length === 0) return;
 
+  const options = await optionsPromise;
   const groupBoundaries = options.crossWindows
     ? [tabsToGroup]
     : groupByProperty(tabsToGroup, "windowId");
 
+  const rules = await rulesPromise;
   const engine = new RuleEngine(rules, options);
+  const existingGroups = await existingGroupsPromise;
 
   await Promise.all(
     groupBoundaries.map(async (tabsInBoundary) => {
       const groupSpecs = engine.createGroupSpecs(tabsInBoundary);
-
       groupByProperty(groupSpecs, "windowId").forEach(assignUnusedColors);
 
-      const createdGroups = await Promise.all(
-        groupSpecs.map((groupSpec) =>
-          createTabGroup(groupSpec, options.collapse),
-        ),
+      console.debug("Group Specs", groupSpecs);
+      const concreteGroups = await Promise.all(
+        groupSpecs.map(async (groupSpec) => {
+          const existingGroup = existingGroups.find(
+            (existingGroup) =>
+              existingGroup.title &&
+              existingGroup.title === groupSpec.title &&
+              (options.crossWindows ||
+                existingGroup.windowId === groupSpec.windowId),
+          );
+          return existingGroup
+            ? updateTabGroup(existingGroup, groupSpec, options.collapse)
+            : createTabGroup(groupSpec, options.collapse);
+        }),
       );
 
       if (options.manualOrder) {
-        await sortGroupOrder(createdGroups, createManualOrderComparator(rules));
+        await sortGroupOrder(
+          concreteGroups,
+          createManualOrderComparator(rules),
+        );
       } else if (options.alphabetize) {
-        await sortGroupOrder(createdGroups, groupTitleComparator);
+        await sortGroupOrder(concreteGroups, groupTitleComparator);
       }
     }),
   );

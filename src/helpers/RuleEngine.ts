@@ -1,8 +1,9 @@
-import { GroupColor, Rule } from "../types";
+import { Rule } from "../types";
 import { EnrichedTab } from "./extensionHelpers";
 import { cleanText } from "./textHelpers";
 import { notNullish } from "./utilities";
 import Tab = chrome.tabs.Tab;
+import ColorEnum = chrome.tabGroups.ColorEnum;
 
 interface RuleEngineOptions {
   autoGroup: boolean;
@@ -12,7 +13,7 @@ export interface GroupSpec {
   title: string;
   tabs: Tab[];
   windowId: number;
-  color?: GroupColor;
+  color?: ColorEnum;
 }
 
 type RuleCheck = {
