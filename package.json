@@ -20,8 +20,8 @@
     "parcel-bundler": "^1.12.5",
     "cross-env": "^7.0.3",
     "typescript": "^4.3.5",
-    "@types/chrome": "^0.0.149",
-    "prettier": "^2.3.2"
+    "@types/chrome": "0.0.251",
+    "prettier": "3.0.3"
   },
   "babel": {
     "plugins": [
