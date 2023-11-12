@@ -1,11 +1,12 @@
 const separatorSet = new Set(["|", "-", "•", ",", "–"]);
 
 export const decomposeTitle = (title: string): string => {
-  let startIndex = -1;
-  for (const [index, char] of [...title].entries()) {
-    if (separatorSet.has(char)) startIndex = index;
+  let buffer = "";
+  for (const char of title) {
+    if (separatorSet.has(char)) buffer = "";
+    else buffer += char;
   }
-  return title.substring(startIndex + 1).trim();
+  return buffer.trim();
 };
 
 export function cleanText(text: string): string;
