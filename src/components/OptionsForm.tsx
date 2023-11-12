@@ -38,14 +38,6 @@ const OptionsForm: FC<{
         />
 
         <OptionSwitch
-          optionName="preserveGroups"
-          label="Preserve Groups"
-          description="Ignores existing groups"
-          options={options}
-          setOption={setOption}
-        />
-
-        <OptionSwitch
           optionName="crossWindows"
           label="Cross Windows"
           description="Merge groups across windows."

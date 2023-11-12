@@ -1,4 +1,6 @@
-export const groupColors = [
+import ColorEnum = chrome.tabGroups.ColorEnum;
+
+export const groupColors: readonly ColorEnum[] = [
   "grey",
   "blue",
   "red",
@@ -7,14 +9,13 @@ export const groupColors = [
   "pink",
   "purple",
   "cyan",
-] as const;
-export type GroupColor = typeof groupColors[number];
+];
 
 export interface Rule {
   id: string;
   title: string;
   matches: string;
-  color: GroupColor;
+  color: ColorEnum;
 }
 
 export interface Options {
@@ -24,7 +25,7 @@ export interface Options {
   crossWindows: boolean;
   alphabetize: boolean;
   manualOrder: boolean;
-  preserveGroups: boolean;
+  preserveGroups: boolean /** @deprecated */;
 }
 
 export const defaultOptions: Options = {
