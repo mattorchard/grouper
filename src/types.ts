@@ -25,7 +25,7 @@ export interface Options {
   crossWindows: boolean;
   alphabetize: boolean;
   manualOrder: boolean;
-  preserveGroups: boolean;
+  preserveGroups: boolean /** @deprecated */;
 }
 
 export const defaultOptions: Options = {
