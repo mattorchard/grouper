@@ -452,3 +452,9 @@ h1 {
   width: 1px !important;
   white-space: nowrap !important;
 }
+
+.error-message {
+  color: var(--red);
+  border-left: 0.5rem solid var(--red-light);
+  padding: 0.5rem;
+}
