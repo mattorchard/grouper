@@ -64,7 +64,7 @@ export class RuleEngine {
     return [...explicitGroups.values(), ...autoGroups.values()];
   }
 
-  private findMatchingRule(tab: EnrichedTab) {
+  public findMatchingRule(tab: EnrichedTab) {
     for (const { rule, test } of this.ruleChecks) {
       const isMatch = test(tab);
       if (isMatch) return rule;

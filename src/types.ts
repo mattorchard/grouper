@@ -37,3 +37,13 @@ export const defaultOptions: Options = {
   alphabetize: false,
   manualOrder: false,
 };
+
+export const passiveOptions: Options = {
+  autoRun: false,
+  autoGroup: false,
+  collapse: false,
+  preserveGroups: false,
+  crossWindows: false,
+  alphabetize: false,
+  manualOrder: false,
+};

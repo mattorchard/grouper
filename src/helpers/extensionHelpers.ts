@@ -16,14 +16,14 @@ export interface EnrichedTab extends Tab {
   titleTrailer: string;
 }
 
-const enrichTab = (tab: Tab): EnrichedTab => ({
+export const enrichTab = (tab: Tab): EnrichedTab => ({
   ...tab,
   id: tab.id!,
   urlObject: asUrl(tab.url),
   titleTrailer: tab.title ? decomposeTitle(tab.title) : "",
 });
 
-const isWithinTabGroup = (tab: Tab) =>
+export const isWithinTabGroup = (tab: { groupId: number }) =>
   tab.groupId !== chrome.tabGroups.TAB_GROUP_ID_NONE;
 
 const getTabId = (tab: Tab) => tab.id!;
