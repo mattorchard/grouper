@@ -22,7 +22,7 @@ interface KeyboardDragState {
 const createNewOrder = (
   rules: Rule[],
   ruleId: string,
-  newIndex: number
+  newIndex: number,
 ): Rule[] => {
   const {
     true: [rule],
@@ -72,7 +72,7 @@ const RuleOrderer: FC<{
   const applyKeyboardMove = (
     container: HTMLElement,
     ruleId: string,
-    newIndex: number
+    newIndex: number,
   ) => {
     onOrderChange(createNewOrder(rules, ruleId, newIndex));
     // Focus is lost during transitions to later in the source order
@@ -158,7 +158,7 @@ const RuleOrderer: FC<{
     useCallback((event: PointerEvent) => {
       if (!event.isPrimary) return;
       setDragState(null);
-    }, [])
+    }, []),
   );
 
   useWindowEvent(
@@ -168,12 +168,12 @@ const RuleOrderer: FC<{
         if (!isAncestor(listRef.current!, event.target as HTMLElement))
           setKeyboardDragState(null);
       },
-      [listRef, setKeyboardDragState]
-    )
+      [listRef, setKeyboardDragState],
+    ),
   );
 
   return (
-    <div>
+    <div className="panel">
       <span id={screenReaderDescriptionId} className="sr-only">
         Press spacebar to reorder
       </span>

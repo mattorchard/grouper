@@ -9,12 +9,12 @@ interface RuleFieldsetProps {
 }
 
 const RuleFieldset: FC<RuleFieldsetProps> = ({ rule, onChange, onDelete }) => (
-  <fieldset className="rule-fieldset">
+  <fieldset className="rule-fieldset panel">
     <div>
       <button
         type="button"
         className="delete-button"
-        title={`Delete rule with title ${rule.title}`}
+        title={`Delete rule with title ${rule.title ?? "(blank)"}`}
         onClick={() => onDelete()}
       >
         <span aria-hidden="true">&times;</span>
