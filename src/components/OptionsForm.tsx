@@ -14,7 +14,7 @@ const OptionsForm: FC<{
   return (
     <form className="options-form">
       <h2 className="options__header">Options</h2>
-      <fieldset className="options__fieldset">
+      <fieldset className="options__fieldset panel">
         <OptionSwitch
           optionName="autoRun"
           label="Auto Run"
@@ -45,7 +45,7 @@ const OptionsForm: FC<{
           setOption={setOption}
         />
 
-        {isAdvanced && (
+        {isAdvanced ? (
           <Fragment>
             <OptionSwitch
               optionName="alphabetize"
@@ -69,6 +69,12 @@ const OptionsForm: FC<{
               setOption={setOption}
             />
           </Fragment>
+        ) : (
+          <div className="options__footer">
+            <a href="/options.html" target="_blank">
+              Full options
+            </a>
+          </div>
         )}
       </fieldset>
     </form>

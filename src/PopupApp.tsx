@@ -49,11 +49,6 @@ const PopupApp = () => {
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       <section>
         <OptionsForm repo={optionsRepo} />
-        <div className="options__footer">
-          <a href="/options.html" target="_blank">
-            Full options
-          </a>
-        </div>
       </section>
       <section>
         <RulesForm repo={rulesRepo} />
