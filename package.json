@@ -5,23 +5,28 @@
   "main": "index.js",
   "scripts": {
     "dev": "node parcel.config.js",
-    "build": "cross-env NODE_ENV=production node parcel.config.js"
+    "build": "cross-env NODE_ENV=production node parcel.config.js",
+    "start-dummy-server": "node dummy-server/index.js"
   },
   "browserslist": [
     "last 3 Chrome version"
   ],
   "dependencies": {
-    "preact": "^10.5.14"
+    "preact": "^10.5.14",
+    "uuid": "9.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.8",
     "@babel/plugin-transform-runtime": "^7.14.5",
-    "babel-plugin-jsx-pragmatic": "^1.0.2",
-    "parcel-bundler": "^1.12.5",
-    "cross-env": "^7.0.3",
-    "typescript": "^4.3.5",
+    "@playwright/test": "^1.41.2",
     "@types/chrome": "0.0.251",
-    "prettier": "3.0.3"
+    "@types/node": "^20.11.19",
+    "@types/uuid": "9.0.8",
+    "babel-plugin-jsx-pragmatic": "^1.0.2",
+    "cross-env": "^7.0.3",
+    "parcel-bundler": "^1.12.5",
+    "prettier": "3.0.3",
+    "typescript": "^4.3.5"
   },
   "babel": {
     "plugins": [
