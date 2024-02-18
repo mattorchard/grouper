@@ -15,6 +15,7 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
   optionsPage: OptionsPage;
+  enableMemorySaver: () => Promise<void>;
   triggerPopup: () => Promise<PopupPage>;
   bulkCreateTabs: (count: number, urls: string[]) => Promise<Page[]>;
   dummyUrl: (desiredTitle: string) => string;
@@ -30,10 +31,24 @@ export const test = base.extend<{
         `--load-extension=${pathToExtension}`,
       ],
     });
-    await enableMemorySaver(context);
     await use(context);
     await context.close();
     await fs.rm(pathToUserData, { recursive: true, force: true });
+  },
+
+  enableMemorySaver: ({ context }, use) => {
+    use(async () => {
+      const settingName = `Memory Saver`;
+
+      const settingsPage = await context.newPage();
+      await settingsPage.goto(`chrome://settings/?search=${settingName}`);
+
+      const toggle = await settingsPage.getByLabel(settingName);
+      const ariaPressed = await toggle.getAttribute("aria-pressed");
+
+      if (ariaPressed !== "true") await toggle.click();
+      await settingsPage.close();
+    });
   },
 
   extensionId: async ({ context }, use) => {
@@ -86,18 +101,5 @@ export const test = base.extend<{
     use((desiredTitle) => `http://127.0.0.1:3000/?title=${desiredTitle}`);
   },
 });
-
-const enableMemorySaver = async (context: BrowserContext) => {
-  const settingName = `Memory Saver`;
-
-  const settingsPage = await context.newPage();
-  await settingsPage.goto(`chrome://settings/?search=${settingName}`);
-
-  const toggle = await settingsPage.getByLabel(settingName);
-  const ariaPressed = await toggle.getAttribute("aria-pressed");
-
-  if (ariaPressed !== "true") await toggle.click();
-  await settingsPage.close();
-};
 
 export const expect = test.expect;

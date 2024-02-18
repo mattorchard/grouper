@@ -10,8 +10,11 @@ test("can handle a boat load of rules", async ({
   triggerPopup,
   bulkCreateTabs,
   dummyUrl,
+  enableMemorySaver,
 }) => {
   test.slow();
+  await enableMemorySaver();
+
   const asGroupTitle = (name: string) => `Group of "${name}"`;
   for (const name of exampleData.names) {
     await optionsPage.addRule({ title: asGroupTitle(name), matches: name });
