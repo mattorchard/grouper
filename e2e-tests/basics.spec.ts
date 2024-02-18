@@ -29,7 +29,7 @@ test("added rules can create groups", async ({
   const popupPage = await triggerPopup();
   expect(await popupPage.summarizeTabsByGroup()).toMatchObject({
     [exampleData.rule.title]: new Array(exampleData.tabCount).fill(
-      exampleData.url,
+      "Example Domain",
     ),
   });
 });

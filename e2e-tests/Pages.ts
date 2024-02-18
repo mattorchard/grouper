@@ -19,7 +19,7 @@ class RulesForm {
   }
 
   color(color: ColorEnum) {
-    return this.form.getByRole("radio", { name: color, exact: true });
+    return this.form.getByRole("radio", { name: color, exact: true }).first();
   }
 
   get addRuleButton() {
@@ -134,8 +134,8 @@ export class PopupPage {
   async summarizeTabsByGroup() {
     const summary: Record<string, string[]> = {};
     for (const { group, tabs } of await this.getTabsByGroup()) {
-      const title = group.title ?? "";
-      summary[title] = tabs.map((tab) => tab.url ?? "");
+      const groupTitle = group.title ?? "";
+      summary[groupTitle] = tabs.map((tab) => tab.title ?? tab.url ?? "");
     }
     return summary;
   }

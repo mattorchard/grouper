@@ -29,7 +29,7 @@ test("can handle a boat load of rules", async ({
   const expectedGroups = Object.fromEntries(
     exampleData.names.map((name) => [
       asGroupTitle(name),
-      new Array(exampleData.tabCount).fill(dummyUrl(name)),
+      new Array(exampleData.tabCount).fill(name),
     ]),
   );
   const popupPage = await triggerPopup();
