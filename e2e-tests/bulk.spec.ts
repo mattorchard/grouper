@@ -17,7 +17,7 @@ test("can handle a boat load of rules", async ({
 
   const asGroupTitle = (name: string) => `Group of "${name}"`;
   for (const name of exampleData.names) {
-    await optionsPage.ruleForm.addRule({
+    await optionsPage.rulesForm.addRule({
       title: asGroupTitle(name),
       matches: name,
     });

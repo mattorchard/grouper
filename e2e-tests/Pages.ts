@@ -1,21 +1,25 @@
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
+import { AvailableOptions } from "../src/types";
 type ColorEnum = chrome.tabGroups.ColorEnum;
 type TabGroup = chrome.tabGroups.TabGroup;
 type Tab = chrome.tabs.Tab;
 
-class RuleForm {
-  constructor(public readonly page: Page) {}
+class RulesForm {
+  readonly form: Locator;
+  constructor(readonly page: Page) {
+    this.form = page.getByTestId("rules-form");
+  }
 
   get title() {
-    return this.page.getByLabel("Title").first();
+    return this.form.getByLabel("Title").first();
   }
 
   get matches() {
-    return this.page.getByLabel("Matches").first();
+    return this.form.getByLabel("Matches").first();
   }
 
   color(color: ColorEnum) {
-    return this.page.getByRole("radio", { name: color, exact: true });
+    return this.form.getByRole("radio", { name: color, exact: true });
   }
 
   get addRuleButton() {
@@ -23,7 +27,8 @@ class RuleForm {
   }
 
   async waitForSave() {
-    await this.page.waitForTimeout(1_000);
+    // Allows time for debounced rule save to apply
+    await this.page.waitForTimeout(500);
   }
 
   async addRule({
@@ -39,11 +44,41 @@ class RuleForm {
   }
 }
 
+class OptionsForm {
+  readonly form: Locator;
+  constructor(readonly page: Page) {
+    this.form = page.getByTestId("options-form");
+  }
+
+  async setOption(optionName: string, shouldCheck: boolean) {
+    const checkbox = this.form.getByRole("checkbox", {
+      name: optionName,
+      includeHidden: true,
+    });
+    const isChecked = await checkbox.isChecked();
+    if (isChecked !== shouldCheck) {
+      // We click on the visible label, instead of the invisible input
+      await this.form.getByText(optionName, { exact: true }).click();
+    }
+  }
+
+  async setOptions(options: AvailableOptions) {
+    await this.setOption("Auto run", options.autoRun);
+    await this.setOption("Auto group", options.autoGroup);
+    await this.setOption("Collapse", options.collapse);
+    await this.setOption("Cross windows", options.crossWindows);
+    await this.setOption("Alphabetize", options.alphabetize);
+    await this.setOption("Manual order", options.manualOrder);
+  }
+}
+
 export class OptionsPage {
-  readonly ruleForm: RuleForm;
+  readonly rulesForm: RulesForm;
+  readonly optionsForm: OptionsForm;
 
   constructor(readonly page: Page) {
-    this.ruleForm = new RuleForm(page);
+    this.rulesForm = new RulesForm(page);
+    this.optionsForm = new OptionsForm(page);
   }
 
   async goto(baseURL: string | undefined) {
@@ -57,10 +92,12 @@ export class OptionsPage {
 }
 
 export class PopupPage {
-  readonly ruleForm: RuleForm;
+  readonly rulesForm: RulesForm;
+  readonly optionsForm: OptionsForm;
 
   constructor(readonly page: Page) {
-    this.ruleForm = new RuleForm(page);
+    this.rulesForm = new RulesForm(page);
+    this.optionsForm = new OptionsForm(page);
   }
 
   async goto(baseURL: string | undefined) {

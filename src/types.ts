@@ -29,6 +29,8 @@ export interface Options {
   preserveGroups: boolean /** @deprecated */;
 }
 
+export type AvailableOptions = Omit<Options, "preserveGroups">;
+
 export const defaultOptions: Options = {
   autoRun: true,
   autoGroup: true,

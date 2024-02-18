@@ -5,8 +5,8 @@ import { Rule } from "../types";
 
 let saveRulesTid: number | null = null;
 const saveRulesDebounced = (rules: Rule[]) => {
-  if (saveRulesTid) clearTimeout(saveRulesTid);
-  saveRulesTid = setTimeout(() => saveRules(rules), 300);
+  if (saveRulesTid) window.clearTimeout(saveRulesTid);
+  saveRulesTid = window.setTimeout(() => saveRules(rules), 300);
 };
 
 export interface RulesRepository {

@@ -12,19 +12,19 @@ const OptionsForm: FC<{
   const { options, setOption } = repo;
 
   return (
-    <form className="options-form">
+    <form className="options-form" data-testid="options-form">
       <h2 className="options__header">Options</h2>
       <fieldset className="options__fieldset panel">
         <OptionSwitch
           optionName="autoRun"
-          label="Auto Run"
+          label="Auto run"
           description="Groups tabs as soon as popup is opened."
           options={options}
           setOption={setOption}
         />
         <OptionSwitch
           optionName="autoGroup"
-          label="Auto Group"
+          label="Auto group"
           description="Create groups from any tabs on the same site."
           options={options}
           setOption={setOption}
@@ -36,10 +36,9 @@ const OptionsForm: FC<{
           options={options}
           setOption={setOption}
         />
-
         <OptionSwitch
           optionName="crossWindows"
-          label="Cross Windows"
+          label="Cross windows"
           description="Merge groups across windows."
           options={options}
           setOption={setOption}

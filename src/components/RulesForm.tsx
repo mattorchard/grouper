@@ -7,7 +7,7 @@ const RulesForm: FC<{ repo: RulesRepository }> = ({ repo }) => {
   const { rules, addRule, saveRule, deleteRule } = repo;
 
   return (
-    <form className="rules-form">
+    <form className="rules-form" data-testid="rules-form">
       <div className="rules-form__header">
         <h2>Rules</h2>
         <Button onClick={addRule} disabled={!rules}>
