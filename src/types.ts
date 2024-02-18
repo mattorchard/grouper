@@ -9,7 +9,7 @@ export const groupColors: readonly ColorEnum[] = [
   "pink",
   "purple",
   "cyan",
-  "orange"
+  "orange",
 ];
 
 export interface Rule {

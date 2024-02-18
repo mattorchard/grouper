@@ -1,6 +1,9 @@
 import { Page } from "@playwright/test";
+type ColorEnum = chrome.tabGroups.ColorEnum;
+type TabGroup = chrome.tabGroups.TabGroup;
+type Tab = chrome.tabs.Tab;
 
-class BasePage {
+class RuleForm {
   constructor(public readonly page: Page) {}
 
   get title() {
@@ -11,6 +14,10 @@ class BasePage {
     return this.page.getByLabel("Matches").first();
   }
 
+  color(color: ColorEnum) {
+    return this.page.getByRole("radio", { name: color, exact: true });
+  }
+
   get addRuleButton() {
     return this.page.getByRole("button", { name: "Add Rule" });
   }
@@ -19,15 +26,26 @@ class BasePage {
     await this.page.waitForTimeout(1_000);
   }
 
-  async addRule({ title, matches }: { title?: string; matches?: string } = {}) {
+  async addRule({
+    title,
+    matches,
+    color,
+  }: { title?: string; matches?: string; color?: ColorEnum } = {}) {
     await this.addRuleButton.click();
     if (title) await this.title.fill(title);
     if (matches) await this.matches.fill(matches);
+    if (color) await this.color(color).check();
     await this.waitForSave();
   }
 }
 
-export class OptionsPage extends BasePage {
+export class OptionsPage {
+  readonly ruleForm: RuleForm;
+
+  constructor(readonly page: Page) {
+    this.ruleForm = new RuleForm(page);
+  }
+
   async goto(baseURL: string | undefined) {
     if (!baseURL) throw new Error(`Missing baseURL`);
     await this.page.goto(`${baseURL}/options.html`);
@@ -38,10 +56,13 @@ export class OptionsPage extends BasePage {
   }
 }
 
-type TabGroup = chrome.tabGroups.TabGroup;
-type Tab = chrome.tabs.Tab;
+export class PopupPage {
+  readonly ruleForm: RuleForm;
 
-export class PopupPage extends BasePage {
+  constructor(readonly page: Page) {
+    this.ruleForm = new RuleForm(page);
+  }
+
   async goto(baseURL: string | undefined) {
     if (!baseURL) throw new Error(`Missing baseURL`);
     await this.page.goto(`${baseURL}/popup.html`);

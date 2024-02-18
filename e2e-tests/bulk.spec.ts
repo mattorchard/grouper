@@ -17,7 +17,10 @@ test("can handle a boat load of rules", async ({
 
   const asGroupTitle = (name: string) => `Group of "${name}"`;
   for (const name of exampleData.names) {
-    await optionsPage.addRule({ title: asGroupTitle(name), matches: name });
+    await optionsPage.ruleForm.addRule({
+      title: asGroupTitle(name),
+      matches: name,
+    });
   }
   await bulkCreateTabs(
     exampleData.tabCount,

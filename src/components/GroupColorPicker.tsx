@@ -1,20 +1,21 @@
 import { FC } from "preact/compat";
 import { capitalizeFirst } from "../helpers/textHelpers";
-import { GroupColor, groupColors } from "../types";
+import { groupColors } from "../types";
 import useStableId from "../hooks/useStableId";
+import ColorEnum = chrome.tabGroups.ColorEnum;
 
 const GroupColorPicker: FC<{
-  value: GroupColor;
-  onChange: (color: GroupColor) => void;
+  value: ColorEnum;
+  onChange: (color: ColorEnum) => void;
 }> = ({ value: selectedColor, onChange }) => {
   const id = useStableId();
   return (
     <div
       className="group-color-picker"
       onChange={(e) =>
-        onChange((e.target as HTMLInputElement).value as GroupColor)
+        onChange((e.target as HTMLInputElement).value as ColorEnum)
       }
-      role="group"
+      role="radiogroup"
       aria-label="Group color picker"
     >
       {groupColors.map((color) => (
