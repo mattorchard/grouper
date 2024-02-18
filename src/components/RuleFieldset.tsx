@@ -9,7 +9,7 @@ interface RuleFieldsetProps {
 }
 
 const RuleFieldset: FC<RuleFieldsetProps> = ({ rule, onChange, onDelete }) => (
-  <fieldset className="rule-fieldset panel">
+  <fieldset className="rule-fieldset panel" data-testid="rule-fieldset">
     <div>
       <button
         type="button"

@@ -10,7 +10,9 @@ const RulesForm: FC<{ repo: RulesRepository }> = ({ repo }) => {
     <form className="rules-form">
       <div className="rules-form__header">
         <h2>Rules</h2>
-        <Button onClick={addRule}>Add Rule</Button>
+        <Button onClick={addRule} disabled={!rules}>
+          Add Rule
+        </Button>
       </div>
       <div class="rule-list">
         {rules?.map((rule) => (
